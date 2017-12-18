@@ -15,7 +15,7 @@
 # define BLOCK_SIZE sizeof(size_t)
 # define CHECKSUM 0xF00D7007
 # define CHECKSUM_SIZE sizeof(long)
-# define STRUCT_BLOCK_SIZE FLAG_SIZE + ADDR_SIZE + BLOCK_SIZE + (CHECKSUM_SIZE * 2) 
+# define STRUCT_BLOCK_SIZE FLAG_SIZE + ADDR_SIZE + BLOCK_SIZE + CHECKSUM_SIZE 
 
 # define TINY_SIZE 16
 # define SMALL_SIZE 512
@@ -30,9 +30,9 @@
 **  |____|____|_____|.............
 **
 **	   ADDR
-**   F PAGE SIZE CHKM  DATA  CHKM 
-**  |_|____|____|____|______|____|
-**   1  8    8     x     8    8   
+**   F PAGE SIZE  DATA  CHKM 
+**  |_|____|____|______|____|
+**   1  8    8     x     8   
 */
 
 enum e_types {
@@ -54,7 +54,7 @@ typedef struct s_data {
 	void	*mem_ret;
 } t_data;
 
-void free(void *ptr);
+void free1(void *ptr);
 void *malloc1(size_t size);
 void *realloc(void *ptr, size_t size);
 
