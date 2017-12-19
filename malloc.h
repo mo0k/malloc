@@ -7,14 +7,15 @@
 # include <string.h>
 # include <stdlib.h>
 
+# define DEBUG 1
 # define ADDR_SIZE sizeof(unsigned long)
 # define OCTET_ALLOC sizeof(size_t)
-# define HEADER_SIZE ADDR_SIZE * 2 + OCTET_ALLOC;
+# define HEADER_SIZE (ADDR_SIZE * 2 + OCTET_ALLOC)
 
 # define FLAG_SIZE sizeof(unsigned char)
 # define BLK_SIZE sizeof(size_t)
 # define CHECKSUM_SIZE 2
-# define STRUCT_BLK_SIZE FLAG_SIZE + ADDR_SIZE + BLK_SIZE + CHECKSUM_SIZE 
+# define STRUCT_BLK_SIZE (FLAG_SIZE + ADDR_SIZE + BLK_SIZE + CHECKSUM_SIZE)
 
 # define TINY_SIZE 16
 # define SMALL_SIZE 512
@@ -28,8 +29,8 @@
 **   NEXT PREV ALLOUE
 **  |____|____|_____|.............
 **
-**	   ADDR
-**   F PAGE SIZE  DATA  CHKM 
+**	   
+**   F NEXT SIZE  DATA  CHKM 
 **  |_|____|____|______|__|
 **   1  8    8     x     2   
 */
@@ -44,6 +45,7 @@ typedef struct	s_memory{
 	void *root;
 	void *top_page;
 	void *current;
+	enum e_types type;
 }				t_memory;
 
 typedef struct s_data {
@@ -52,6 +54,8 @@ typedef struct s_data {
 	t_memory mem_large;
 	void	*mem_ret;
 } t_data;
+
+t_data g_data;
 
 void free1(void *ptr);
 void *malloc1(size_t size);
