@@ -12,10 +12,9 @@
 # define HEADER_SIZE ADDR_SIZE * 2 + OCTET_ALLOC;
 
 # define FLAG_SIZE sizeof(unsigned char)
-# define BLOCK_SIZE sizeof(size_t)
-# define CHECKSUM 0xF00D7007
-# define CHECKSUM_SIZE sizeof(long)
-# define STRUCT_BLOCK_SIZE FLAG_SIZE + ADDR_SIZE + BLOCK_SIZE + CHECKSUM_SIZE 
+# define BLK_SIZE sizeof(size_t)
+# define CHECKSUM_SIZE 2
+# define STRUCT_BLK_SIZE FLAG_SIZE + ADDR_SIZE + BLK_SIZE + CHECKSUM_SIZE 
 
 # define TINY_SIZE 16
 # define SMALL_SIZE 512
@@ -31,8 +30,8 @@
 **
 **	   ADDR
 **   F PAGE SIZE  DATA  CHKM 
-**  |_|____|____|______|____|
-**   1  8    8     x     8   
+**  |_|____|____|______|__|
+**   1  8    8     x     2   
 */
 
 enum e_types {

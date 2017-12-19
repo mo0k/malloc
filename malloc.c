@@ -17,6 +17,7 @@ void *get_map(void *addr, size_t size);
 void forge_block(void *addr_begin, size_t size, void *root);
 void set_next_map(void *addr, enum e_types type);
 int	available_space(t_memory *mem, void *addr, enum e_types mem_type, size_t size);
+void calcul_checksum(void *addr, unsigned char *checksum);
 
 int main(int ac, char **av)
 {
@@ -79,15 +80,25 @@ int get_page_size(enum e_types type)
 
 void free1(void *ptr)
 {
+	unsigned char checksum[2];
+
 	if (!ptr)
 		return ;
 	//verifier si addr est valide
-	if (*(unsigned long*)(ptr + *(size_t*)(ptr - BLOCK_SIZE)) == CHECKSUM)
+	calcul_checksum(ptr - BLK_SIZE - ADDR_SIZE - FLAG_SIZE, checksum);
+	printf("checksum[0]:%x\n", checksum[0]);
+	printf("checksum[1]:%x\n", checksum[1]);
+	printf("checksum_blk[0]:%x\t%p\n", *(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE)), (unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE)));
+	printf("checksum_blk[1]:%x\t%p\n", *(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE) + 1), (unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE) + 1));
+	sleep(5);
+	if (*(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE)) == checksum[0]
+		&& *(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE) + 1) == checksum[1])
 	{
-		*(unsigned char*)(ptr - BLOCK_SIZE - ADDR_SIZE - FLAG_SIZE) = 'F';
-		*(size_t*)(*(unsigned long*)(ptr - BLOCK_SIZE - ADDR_SIZE) + (ADDR_SIZE * 2)) -= *(size_t*)(ptr - BLOCK_SIZE);
-		//decrementer octect alloues avec addr
+		*(unsigned char*)(ptr - BLK_SIZE - ADDR_SIZE - FLAG_SIZE) = 'F';
 		//recalculer checksum et le modifier
+		calcul_checksum(ptr - (STRUCT_BLK_SIZE + CHECKSUM_SIZE), ptr + *(size_t*)(ptr - BLK_SIZE));
+		*(size_t*)(*(unsigned long*)(ptr - BLK_SIZE - ADDR_SIZE) + (ADDR_SIZE * 2)) -= *(size_t*)(ptr - BLK_SIZE);
+		//si octect malloc == 0 alors mummap et raccorder les autres pages; 
 	}
 	else
 	{
@@ -122,10 +133,6 @@ void *malloc1(size_t size)
 		mem->root = get_map(mem->root, type == LARGE ? size : get_page_size(type));
 		mem->top_page = mem->root;
 		mem->current = mem->root + HEADER_SIZE;
-		//ptr = (size_t*)mem->current;
-		//*ptr = get_page_size(type) - sizeof(unsigned long) - sizeof(size_t);
-		//printf("page_size:%zd\t%zd\t%d\n", (size_t*)(*ptr), *(size_t*)(mem->current), get_page_size(type));
-		//mem->current += sizeof(size_t);
 		printf("DEBUG | NEW MAP mem:'%p'\n", mem);
 		printf("DEBUG | NEW MAP mem:->root:'%p'\n", mem->root);
 		printf("DEBUG | mem:->top:'%p'\n", mem->top_page);
@@ -146,8 +153,8 @@ void *malloc1(size_t size)
 	{
 		forge_block(mem->current, size, mem->top_page);
 		*(size_t*)(mem->top_page + (ADDR_SIZE * 2)) += size;
-		data.mem_ret = mem->current + FLAG_SIZE + ADDR_SIZE + BLOCK_SIZE;
-		mem->current += STRUCT_BLOCK_SIZE + size;
+		data.mem_ret = mem->current + FLAG_SIZE + ADDR_SIZE + BLK_SIZE;
+		mem->current += STRUCT_BLK_SIZE + size;
 	}
 	else if (ret == 0)
 	{
@@ -161,11 +168,11 @@ void *malloc1(size_t size)
 			printf("apres:%p\n", mem->current);
 			//sleep(1);
 			forge_block(mem->current, size, mem->top_page);
-			data.mem_ret = mem->current + FLAG_SIZE + ADDR_SIZE + BLOCK_SIZE;
 			*(size_t*)(mem->top_page + (ADDR_SIZE * 2)) += size;
+			data.mem_ret = mem->current + FLAG_SIZE + ADDR_SIZE + BLK_SIZE;
+			mem->current += STRUCT_BLK_SIZE + size;
 
 			//print_page(mem->top_page, type == LARGE ? size : get_page_size(type));
-			mem->current += STRUCT_BLOCK_SIZE + size;
 		//exit(0);
 	}
 	print_page(mem->top_page, type == LARGE ? size : get_page_size(type));
@@ -173,20 +180,20 @@ void *malloc1(size_t size)
 }
 void 	*next_block(void *addr)
 {
-	size_t block_size;
+	size_t blk_size;
 
 	if (!addr)
 		return (0);
-	block_size = *(size_t*)(addr + FLAG_SIZE + ADDR_SIZE);
-	printf("block size:%zu, %lu, %p, %zu\n", block_size, FLAG_SIZE + ADDR_SIZE, addr + FLAG_SIZE + ADDR_SIZE, *(size_t*)(addr + FLAG_SIZE + ADDR_SIZE));
-	return (addr + STRUCT_BLOCK_SIZE + block_size);
+	blk_size = *(size_t*)(addr + FLAG_SIZE + ADDR_SIZE);
+	printf("block size:%zu, %lu, %p, %zu\n", blk_size, FLAG_SIZE + ADDR_SIZE, addr + FLAG_SIZE + ADDR_SIZE, *(size_t*)(addr + FLAG_SIZE + ADDR_SIZE));
+	return (addr + STRUCT_BLK_SIZE + blk_size);
 }
 
 int		available_space(t_memory *mem, void *addr, enum e_types mem_type, size_t size)
 {
 	printf("DEBUG available_space\n");
 	size_t	sum;
-	size_t	block_size;
+	size_t	blk_size;
 	void	*ptr_current;
 
 	if (!mem)
@@ -202,7 +209,7 @@ int		available_space(t_memory *mem, void *addr, enum e_types mem_type, size_t si
 		printf("infini => %d %c\n", *(unsigned char*)mem->current, *(unsigned char*)mem->current);
 		if (*(unsigned char*)mem->current == 0)
 		{
-			if (mem->current + STRUCT_BLOCK_SIZE + size < mem->top_page + get_page_size(mem_type))
+			if (mem->current + STRUCT_BLK_SIZE + size < mem->top_page + get_page_size(mem_type))
 				return (1);
 			else
 			{
@@ -219,7 +226,7 @@ int		available_space(t_memory *mem, void *addr, enum e_types mem_type, size_t si
 		else if (*(unsigned char*)mem->current == 'F')
 		{
 			(sum == 0) ? ptr_current = mem->current : 0;
-			sum += (sum == 0) ? 0 : STRUCT_BLOCK_SIZE;
+			sum += (sum == 0) ? 0 : STRUCT_BLK_SIZE;
 			sum += *(size_t*)(mem->current + FLAG_SIZE + ADDR_SIZE);
 			if (sum >= size)
 			{
@@ -243,6 +250,30 @@ int		available_space(t_memory *mem, void *addr, enum e_types mem_type, size_t si
 	return (0);
 }
 
+void calcul_checksum(void *addr, unsigned char *checksum)
+{
+	int		i;
+	int		j;
+	int		sum1;
+	int		sum2;
+
+	if (!addr)
+		return ;
+	i = 0;
+	j = 0;
+	sum1 = 0;
+	sum2 = 0;
+	while (i < STRUCT_BLK_SIZE - CHECKSUM_SIZE)
+	{
+		sum1 += *(unsigned char*)(addr + i);
+		sum2 += *(unsigned char*)(addr + i) * ++j;
+		++i;
+	}
+	checksum[0] = sum1 & 0xFF;
+	checksum[1] = sum2 & 0xFF;
+	printf("sum1:%x\tsum2:%x\nsum1 & 0xFF:%x\tsum2 & 0xFF:%x\n",sum1, sum2, sum1 & 0xFF, sum2 & 0xFF);
+	sleep (4);
+}
 void set_next_map(void *addr, enum e_types type)
 {
 	void			*new;
@@ -264,17 +295,21 @@ void set_next_map(void *addr, enum e_types type)
 void forge_block(void *begin, size_t size, void *root)
 {
 	printf("Start forge_block : size:%zu\n", size);
-	unsigned char *flag; 
+	void *addr;
+	unsigned char checksum[2];
+	//unsigned char *flag; 
 
 	if (begin == NULL)
 		return ;
-	*(unsigned char*)begin = 'M';
-	begin += FLAG_SIZE;
-	*(unsigned long*)begin = (unsigned long)root;
-	begin += ADDR_SIZE;
-	*(size_t*)begin = size;
-	begin += BLOCK_SIZE + size;
-	*(unsigned long*)begin = CHECKSUM;
+	addr = begin;
+	*(unsigned char*)addr = 'M';
+	addr += FLAG_SIZE;
+	*(unsigned long*)addr = (unsigned long)root;
+	addr += ADDR_SIZE;
+	*(size_t*)addr = size;
+	addr += BLK_SIZE + size;
+	calcul_checksum(begin, (unsigned char*)addr);
+	//*(unsigned long*)addr = CHECKSUM;
 }
 
 void	*get_map(void *addr, size_t size)
