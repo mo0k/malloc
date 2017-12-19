@@ -7,7 +7,6 @@
 # include <string.h>
 # include <stdlib.h>
 
-# define DEBUG 1
 # define ADDR_SIZE sizeof(unsigned long)
 # define OCTET_ALLOC sizeof(size_t)
 # define HEADER_SIZE (ADDR_SIZE * 2 + OCTET_ALLOC)

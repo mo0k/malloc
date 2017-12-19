@@ -55,7 +55,7 @@ int main(int ac, char **av)
 	printf("ptr3:%p, ptr2 - 4:%p, char:%c\n", ptr3, ptr2 - 4, *(ptr2 - (STRUCT_BLK_SIZE - CHECKSUM_SIZE)));
 	sleep(5);
 	*(ptr2 - (STRUCT_BLK_SIZE - CHECKSUM_SIZE)) = 'F';
-	free1(1024);
+	free1(ptr2);
 	free1(ptr3);
 	ptr4 = malloc1(16);
 	printf("ptr4:%p\n", ptr4);
@@ -155,13 +155,13 @@ void free1(void *ptr)
 		exit(1);
 	}
 	calcul_checksum(ptr - BLK_SIZE - ADDR_SIZE - FLAG_SIZE, checksum);
-	//#ifndef DEBUG
+	#ifndef NDEBUG
 		printf("checksum[0]:%x\n", checksum[0]);
 		printf("checksum[1]:%x\n", checksum[1]);
 		printf("checksum_blk[0]:%x\t%p\n", *(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE)), (unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE)));
 		printf("checksum_blk[1]:%x\t%p\n", *(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE) + 1), (unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE) + 1));
 		sleep(5);
-	//#endif
+	#endif
 	if (*(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE)) == checksum[0]
 		&& *(unsigned char*)(ptr + *(size_t*)(ptr - BLK_SIZE) + 1) == checksum[1])
 	{
@@ -187,7 +187,7 @@ void *malloc1(size_t size)
 	enum e_types		type;
 	//void				*tmp;
 	//bzero(memory, sizeof(memory));
-	#ifndef DEBUG
+	#ifndef NDEBUG
 		printf("DEBUG | BEGIN MALLOC\n");
 		printf("tiny:'%p'\n", &g_data.mem_tiny);
 		printf("\troot:'%p'\n", g_data.mem_tiny.root);
@@ -209,20 +209,22 @@ void *malloc1(size_t size)
 		mem->top_page = mem->root;
 		mem->current = mem->root + HEADER_SIZE;
 		mem->type = type;
-		printf("DEBUG | NEW MAP mem:'%p'\n", mem);
-		printf("DEBUG | NEW MAP mem:->root:'%p'\n", mem->root);
-		printf("DEBUG | mem:->top:'%p'\n", mem->top_page);
-		printf("DEBUG | NEW MAP mem:->current:'%p'\n", mem->current);
-		sleep(5);
+		#ifndef NDEBUG
+			printf("DEBUG | NEW MAP mem:'%p'\n", mem);
+			printf("DEBUG | NEW MAP mem:->root:'%p'\n", mem->root);
+			printf("DEBUG | mem:->top:'%p'\n", mem->top_page);
+			printf("DEBUG | NEW MAP mem:->current:'%p'\n", mem->current);
+			sleep(5);
+		#endif
 	}
-	else
-		printf("DEJA MMAP\n");
-	printf("DEBUG | mem:'%p'\n", mem);
-	printf("DEBUG | mem:->root:'%p'\n", mem->root);
-	printf("DEBUG | mem:->top:'%p'\n", mem->top_page);
-	printf("DEBUG | mem:->current:'%p'\n", mem->current);
-	printf("octect alloc:%zd\t%d\n", *(size_t*)(mem->root + ADDR_SIZE * 2), get_page_size(type));
-	//sleep(1);
+	#ifndef NDEBUG
+		printf("DEBUG | mem:'%p'\n", mem);
+		printf("DEBUG | mem:->root:'%p'\n", mem->root);
+		printf("DEBUG | mem:->top:'%p'\n", mem->top_page);
+		printf("DEBUG | mem:->current:'%p'\n", mem->current);
+		printf("octect alloc:%zd\t%d\n", *(size_t*)(mem->root + ADDR_SIZE * 2), get_page_size(type));
+		//sleep(1);
+	#endif
 	int ret;
 	mem->current = mem->root + HEADER_SIZE;
 	if ((ret = available_space(mem, mem->root, type, size) == 1))
