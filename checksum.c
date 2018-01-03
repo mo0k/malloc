@@ -34,7 +34,7 @@ int	verif_checksum(void *addr, size_t size)
 	if (!addr)
 		return (0);
 	checksum(addr, size, chkm);
-	printf("DEBUG in verif_checksum => addr:%x\tchkm[0]:%x\n\t\t\t\t\t\taddr+1:%x\tchkm[1]%x\n", *(unsigned char*)(addr + size), chkm[0],*(unsigned char*)(addr + size + 1), chkm[1]); 
+	//printf("DEBUG in verif_checksum => addr:%x\tchkm[0]:%x\n\t\t\taddr+1:%x\tchkm[1]%x\n", *(unsigned char*)(addr + size), chkm[0],*(unsigned char*)(addr + size + 1), chkm[1]); 
 	if (*(unsigned char*)(addr + size) == chkm[0] &&
 		*(unsigned char*)(addr + size + 1) == chkm[1])
 		return (1);

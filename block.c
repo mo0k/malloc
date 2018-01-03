@@ -28,29 +28,29 @@ void	create_block(t_memory *mem, size_t size, int page_size)
 	void 	*next;
 	//unsigned char chkm[2];
 
-	if (mem->current + size + (STRUCT_BLK_SIZE  * 2) + 1 > mem->top_page + page_size)
+	if (mem->current + size + (STRUCT_BLK_SIZE  * 2) + 1 > mem->map + page_size)
 		next = NULL;
 	else
 		next = mem->current + STRUCT_BLK_SIZE + size;
-	size += next ? 0 : (mem->top_page + page_size) - (mem->current + size + STRUCT_BLK_SIZE);
+	size += next || mem->type == LARGE ? 0 : (mem->map + page_size) - (mem->current + size + STRUCT_BLK_SIZE);
 	printf("DEBUG | current:%p\tnext:%p\n",mem->current, next);
 	printf("size:%zd\n", size);
 	forge_block(mem->current, size, next, 'M');
 	printf("avant verif_checksum HEADER_PAGE\n");
-	if (!verif_checksum(mem->top_page, HEADER_SIZE - CHECKSUM_SIZE))
+	if (!verif_checksum(mem->map, HEADER_SIZE - CHECKSUM_SIZE))
 	{
 		printf("ABORT create_blk\n");
 		exit(1);
 	}
-	*(size_t*)(mem->top_page + (ADDR_SIZE * 2)) += size;
-	checksum(mem->top_page, HEADER_SIZE - CHECKSUM_SIZE, (unsigned char*)(mem->top_page + HEADER_SIZE - CHECKSUM_SIZE));
-	printf("create_block new checksum[0]:%x\n", *(unsigned char*)(mem->top_page + HEADER_SIZE - CHECKSUM_SIZE));
-	printf("create_block new checksum[1]:%x\n", *(unsigned char*)(mem->top_page + HEADER_SIZE - CHECKSUM_SIZE + 1));
+	*(size_t*)(mem->map + (ADDR_SIZE * 2)) += size;
+	checksum(mem->map, HEADER_SIZE - CHECKSUM_SIZE, (unsigned char*)(mem->map + HEADER_SIZE - CHECKSUM_SIZE));
+	printf("create_block HEADER new checksum[0]:%x\n", *(unsigned char*)(mem->map + HEADER_SIZE - CHECKSUM_SIZE));
+	printf("create_block HEADER new checksum[1]:%x\n", *(unsigned char*)(mem->map + HEADER_SIZE - CHECKSUM_SIZE + 1));
 
 	//g_data.mem_ret = mem->current + FLAG_SIZE + ADDR_SIZE + BLK_SIZE;
 	g_data.mem_ret = mem->current + STRUCT_BLK_SIZE;
 	printf("addr ret = %p\n", g_data.mem_ret);
-	mem->current += (mem->current + STRUCT_BLK_SIZE + size >= mem->top_page + page_size) ? 0 : STRUCT_BLK_SIZE + size;
+	mem->current += (mem->current + STRUCT_BLK_SIZE + size >= mem->map + page_size) ? 0 : STRUCT_BLK_SIZE + size;
 	//mem->current += STRUCT_BLK_SIZE + size;
 	printf("DEBUG | fin create_blk, mem->current:%p\n", mem->current);
 }
@@ -62,14 +62,16 @@ void 	*next_block(void *addr, void *root_page, int page_size)
 
 	if (!addr)
 		return (0);
-	printf("avant verif_checksum HEADER_BLOCK\n");
+	//printf("avant verif_checksum HEADER_BLOCK\n");
 	if (!verif_checksum(addr, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 	{
 		printf("ABORT next_block\n");
 		exit(1);
 	}
 	size = *(size_t*)(addr + FLAG_SIZE + ADDR_SIZE);
-	printf("size:%zd\n", size);
+	//printf("size:%zd\n", size);
+	//printf("root_page(%p) + page_size(%d)\n", root_page, page_size);
+	//printf("root_page + page_size:%p\naddr + STRUCT_BLK_SIZE + size:%p\n", root_page + page_size, addr + STRUCT_BLK_SIZE + size);
 	return ((addr + STRUCT_BLK_SIZE + size < root_page + page_size) ? addr + STRUCT_BLK_SIZE + size : 0);
 }
 

@@ -10,8 +10,8 @@
 # define CHECKSUM_SIZE 2
 
 # define ADDR_SIZE sizeof(unsigned long)
-# define OCTET_ALLOC sizeof(size_t)
-# define HEADER_SIZE (ADDR_SIZE * 2 + OCTET_ALLOC + CHECKSUM_SIZE)
+# define ALLOC_SIZE sizeof(size_t)
+# define HEADER_SIZE (ADDR_SIZE * 2 + ALLOC_SIZE + CHECKSUM_SIZE)
 
 # define FLAG_SIZE sizeof(unsigned char)
 # define BLK_SIZE sizeof(size_t)
@@ -43,8 +43,9 @@ enum e_types {
 
 typedef struct		s_memory{
 	void 			*root;
-	void 			*top_page;
+	void 			*map;
 	void 			*current;
+	void			*free;
 	enum e_types 	type;
 }					t_memory;
 
@@ -74,5 +75,9 @@ enum e_types 		get_type_block(size_t size);
 //void 				checksum(void *addr, unsigned char *checksum);
 void 				checksum(void *addr, size_t size, unsigned char *checksum);
 int	verif_checksum(void *addr, size_t size);
+
+void	show_alloc_mem(void);
+void exit_abort(void *ptr);
+
 
 #endif
