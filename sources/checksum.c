@@ -2,7 +2,7 @@
 
 void checksum(void *addr, size_t size, unsigned char *checksum)
 {
-	int		i;
+	size_t		i;
 	int		j;
 	unsigned int	sum1;
 	unsigned int	sum2;
@@ -22,7 +22,7 @@ void checksum(void *addr, size_t size, unsigned char *checksum)
 	checksum[0] = sum1 & 0xFF;
 	checksum[1] = sum2 & 0xFF;
 	//#ifndef DEBUG
-		//printf("sum1:%x\tsum2:%x\nsum1 & 0xFF:%x\tsum2 & 0xFF:%x\n",sum1, sum2, sum1 & 0xFF, sum2 & 0xFF);
+		//ft_printf("sum1:%x\tsum2:%x\nsum1 & 0xFF:%x\tsum2 & 0xFF:%x\n",sum1, sum2, sum1 & 0xFF, sum2 & 0xFF);
 		//sleep (4);
 	//#endif
 }
@@ -34,7 +34,7 @@ int	verif_checksum(void *addr, size_t size)
 	if (!addr)
 		return (0);
 	checksum(addr, size, chkm);
-	//printf("DEBUG in verif_checksum => addr:%x\tchkm[0]:%x\n\t\t\taddr+1:%x\tchkm[1]%x\n", *(unsigned char*)(addr + size), chkm[0],*(unsigned char*)(addr + size + 1), chkm[1]); 
+	//ft_printf("DEBUG in verif_checksum => addr:%x\tchkm[0]:%x\n\t\t\taddr+1:%x\tchkm[1]%x\n", *(unsigned char*)(addr + size), chkm[0],*(unsigned char*)(addr + size + 1), chkm[1]); 
 	if (*(unsigned char*)(addr + size) == chkm[0] &&
 		*(unsigned char*)(addr + size + 1) == chkm[1])
 		return (1);

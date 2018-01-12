@@ -3,37 +3,37 @@
 
 static t_memory 			*is_valid_tiny_small(t_memory *mem, void *ptr, int start_limit, int end_limit)
 {
-	int i = 1;
+	//int i = 1;
 
 	if (!mem || !ptr)
 		return (NULL);
 	mem->map = mem->root;
-	printf("top_page:%p\t+start:%p\t+end:%p\tptr:%p\n", mem->map, mem->map + start_limit,  mem->map + end_limit, ptr);
+	//printf("top_page:%p\t+start:%p\t+end:%p\tptr:%p\n", mem->map, mem->map + start_limit,  mem->map + end_limit, ptr);
 	if (mem->map + start_limit <= ptr
 		&& mem->map + end_limit > ptr)
 		return (mem);
 	while (*(unsigned long*)mem->map)
 	{
-		printf("boucle index:%d, %p contient %p\n", i++, mem->map, (void*)(*(unsigned long*)mem->map));
+		//printf("boucle index:%d, %p contient %p\n", i++, mem->map, (void*)(*(unsigned long*)mem->map));
 		if (!verif_checksum(mem->map, HEADER_SIZE - CHECKSUM_SIZE))
 		{
-			printf("ABORT free => is_valid\n");
-			exit(1);
+			//printf("ABORT free => is_valid\n");
+			exit_abort(mem->map);
 		}
 		//verif_checksum
 		mem->map = (void*)(*(unsigned long*)mem->map);
-		printf("new top_page:%p\n", mem->map);
+		//printf("new top_page:%p\n", mem->map);
 		if (mem->map + start_limit <= ptr
 			&& mem->map + end_limit > ptr)
 			return (mem);
 	}
-	printf("is_valid_tiny_small return NULL\n");
+	//printf("is_valid_tiny_small return NULL\n");
 	return (NULL);
 }
 
 static t_memory 			*is_valid_large(t_memory *mem, void *ptr)
 {
-	int i = 1;
+	//int i = 1;
 
 	if (!mem || !ptr)
 		return (NULL);
@@ -43,24 +43,25 @@ static t_memory 			*is_valid_large(t_memory *mem, void *ptr)
 		return (mem);
 	while (*(unsigned long*)mem->map)
 	{
-		printf("boucle index:%d, %p\n", i++, (void*)(*(unsigned long*)mem->map));
+		//printf("boucle index:%d, %p\n", i++, (void*)(*(unsigned long*)mem->map));
 		//verif_checksum
 		if (!verif_checksum(mem->map, HEADER_SIZE - CHECKSUM_SIZE))
 		{
-			printf("ABORT free for large\n");
-			exit(1);
+			//printf("ABORT free for large\n");
+			exit_abort(mem->map);
 		}
 		mem->map = (void*)(*(unsigned long*)mem->map);
 		if (mem->map + HEADER_SIZE + STRUCT_BLK_SIZE == ptr)
 			return (mem);
-		printf("new top_page:%p\n", (void*)(*(unsigned long*)mem->map));
+		//printf("new top_page:%p\n", (void*)(*(unsigned long*)mem->map));
 	}
 	return (NULL);
 }
 static t_memory 	*check_pointer(t_data *data, void *ptr)
 {
+	//printf("check pointer\n");
 	t_memory *mem;
-	int i = 1;
+	//int i = 1;
 
 	if (!data)
 		return (NULL);
@@ -70,7 +71,7 @@ static t_memory 	*check_pointer(t_data *data, void *ptr)
 			TINY_PAGE_SIZE)))
 			return (mem);
 		/*
-		printf("DEBUG | in check_pointer tiny\n");
+		//printf("DEBUG | in check_pointer tiny\n");
 		mem = &data->mem_tiny;
 		mem->map = mem->root;
 		if (mem->map + HEADER_SIZE + (STRUCT_BLK_SIZE - CHECKSUM_SIZE) < ptr
@@ -78,12 +79,12 @@ static t_memory 	*check_pointer(t_data *data, void *ptr)
 			return (mem);
 		while (*(unsigned long*)mem->map)
 		{
-			printf("boucle index:%d, %p\n", i++, (void*)(*(unsigned long*)mem->map));
+			//printf("boucle index:%d, %p\n", i++, (void*)(*(unsigned long*)mem->map));
 			mem->map = (void*)(*(unsigned long*)mem->map);
 			if (mem->map + HEADER_SIZE + (STRUCT_BLK_SIZE - CHECKSUM_SIZE) < ptr
 				&& mem->map + TINY_PAGE_SIZE >= ptr)
 				return (mem);
-			printf("new top_page:%p\n", (void*)(*(unsigned long*)mem->map));
+			//printf("new top_page:%p\n", (void*)(*(unsigned long*)mem->map));
 		}
 		*/
 	}
@@ -103,7 +104,7 @@ static t_memory 	*check_pointer(t_data *data, void *ptr)
 
 void	clear_data(t_data *data)
 {
-	printf("clear_data BEGIN\n");
+	//printf("clear_data BEGIN\n");
 	//void 	*next;
 	void *map;
 
@@ -118,11 +119,11 @@ void	clear_data(t_data *data)
 				break;
 			map = (void*)*(unsigned long*)(data->mem_tiny.map);
 			munmap(data->mem_tiny.map, TINY_PAGE_SIZE);
-			printf("suppression page\n");
+			//printf("suppression page\n");
 			data->mem_tiny.map = map;
 		}
 		munmap(data->mem_tiny.root, TINY_PAGE_SIZE);
-		printf("suppression page root\n");
+		//printf("suppression page root\n");
 		//memset(&data->mem_tiny, sizeof(t_memory), 0);
 	}
 	if (data->mem_small.root)
@@ -134,61 +135,70 @@ void	clear_data(t_data *data)
 
 	}
 	//printf("%c\n", *(unsigned char*)data->mem_tiny.root);
-	printf("end clear_data\n");
+	//printf("end clear_data\n");
 }
 
 void exit_abort(void *ptr)
 {
 	if (ptr)
-		printf("malloc: *** error for object %p: pointer being freed was not allocated\n", ptr);
+		ft_printf("malloc: *** error for object %p: pointer being freed was not allocated\n", ptr);
 	clear_data(&g_data);
-	kill(0, SIGABRT);
+	//kill(0, SIGABRT);
 }
 
-void free1(void *ptr)
+void free(void *ptr)
 {
+	//write(1, "FREE\n", 5);
+	ft_printf("FREE\n");
+	//sleep(2);
 	//unsigned char 	chkm[2];
 	t_memory 		*mem;
 	//size_t 			size;
-	printf("DEBUG | BEGIN FREE => ptr:%p\n", ptr);
+	ft_printf("DEBUG | BEGIN FREE => ptr:%p\n", ptr);
 	if (!ptr)
+	{
+
+		ft_printf("return\n");
 		return ;
+	}
+	//printf("apres\n");
+	//write(1, "gooo\n", 5);
 	//verifier si addr est valide
 	if (!(mem = check_pointer(&g_data, ptr)))
 	{
-		printf("ABORT free check_pointer\n");
-		exit_abort(ptr);
+		ft_printf("ABORT free check_pointer\n");
+		return(exit_abort(ptr));
 	}
 	if (!verif_checksum(ptr - STRUCT_BLK_SIZE, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 	{
-		printf("ABORT free checksum block error\n");
-		exit_abort(ptr);
+		//printf("ABORT free checksum block error\n");
+		return(exit_abort(ptr));
 	}
 	if (*(unsigned char*)(ptr - STRUCT_BLK_SIZE) == 'F')
 	{
-		printf("DOUBLE FREE\n");
-		exit_abort(ptr);
+		//printf("DOUBLE FREE\n");
+		return(exit_abort(ptr));
 	}
 	*(unsigned char*)(ptr - STRUCT_BLK_SIZE) = 'F';
 	checksum(ptr - STRUCT_BLK_SIZE, STRUCT_BLK_SIZE - CHECKSUM_SIZE, ptr - CHECKSUM_SIZE);
 	if (!verif_checksum(mem->map, HEADER_SIZE - CHECKSUM_SIZE))
 	{
-		printf("ABORT free checksum map error \n");
-		exit_abort(ptr);
+		//printf("ABORT free checksum map error \n");
+		return(exit_abort(ptr));
 	}
-	(!mem->free) ? (mem->free = ptr - STRUCT_BLK_SIZE) : 0;
-	mem->free = (mem->free > ptr - STRUCT_BLK_SIZE) ? ptr - STRUCT_BLK_SIZE : mem->free;
-	mem->current = mem->free;
-	printf("mem->current:%p\n", mem->current);
-	printf("OCTECTS RESTANT 1:%zd\n", *(size_t*)(mem->map + ADDR_SIZE * 2));
+	//(!mem->free) ? (mem->free = ptr - STRUCT_BLK_SIZE) : 0;
+	//mem->free = (mem->free > ptr - STRUCT_BLK_SIZE) ? ptr - STRUCT_BLK_SIZE : mem->free;
+	//mem->current = mem->free;
+	//printf("mem->current:%p\n", mem->current);
+	//printf("OCTECTS RESTANT 1:%zd\n", *(size_t*)(mem->map + ADDR_SIZE * 2));
 	*(size_t*)(mem->map + ADDR_SIZE * 2) -= *(size_t*)(ptr - BLK_SIZE - CHECKSUM_SIZE);
 	checksum(mem->map, HEADER_SIZE - CHECKSUM_SIZE, mem->map + HEADER_SIZE - CHECKSUM_SIZE);
-	printf("OCTECTS RESTANT 2:%zd\n", *(size_t*)(mem->map + ADDR_SIZE * 2));
+	//printf("OCTECTS RESTANT 2:%zd\n", *(size_t*)(mem->map + ADDR_SIZE * 2));
 	if (*(size_t*)(mem->map + ADDR_SIZE * 2) == 0)
 	{
 		//remplacer free = NULL par function get_next_free
-		mem->free = NULL;
-		printf("GO MUNMAP\n");
+		//mem->free = NULL;
+		//printf("GO MUNMAP\n");
 		//si octect malloc == 0 alors mummap et raccorder les autres pages; 
 		void *prev;
 		void *next;
@@ -197,13 +207,13 @@ void free1(void *ptr)
 		next = (void*)*(unsigned long*)mem->map;
 		if (!prev)
 		{
-			printf("PREV == NULL => mem->root = next(%p)\troot(%p);\n", next, mem->root);
+			//printf("PREV == NULL => mem->root = next(%p)\troot(%p);\n", next, mem->root);
 			if ((mem->root = next))
 			{
 				if (!verif_checksum(next, HEADER_SIZE - CHECKSUM_SIZE))
 				{
-					printf("ABORT free munmap next and prev==NULL\n");
-					exit_abort(ptr);
+					//printf("ABORT free munmap next and prev==NULL\n");
+					return(exit_abort(ptr));
 				}
 				*(unsigned long*)(next + ADDR_SIZE) = (unsigned long)prev;
 				checksum(next, HEADER_SIZE - CHECKSUM_SIZE, next + ADDR_SIZE * 2 + ALLOC_SIZE);
@@ -213,22 +223,22 @@ void free1(void *ptr)
 		{
 			if (next)
 			{
-				printf("PREV(%p) && NEXT(%p)\n", prev, next);
+				//printf("PREV(%p) && NEXT(%p)\n", prev, next);
 				if (!verif_checksum(next, HEADER_SIZE - CHECKSUM_SIZE) || !verif_checksum(prev, HEADER_SIZE- CHECKSUM_SIZE))
 				{
-					printf("ABORT free munmap join next and prev page\n");
-					exit_abort(ptr);
+					//printf("ABORT free munmap join next and prev page\n");
+					return(exit_abort(ptr));
 				}
 				*(unsigned long*)(next + ADDR_SIZE) = (unsigned long)prev;
 				checksum(next, HEADER_SIZE - CHECKSUM_SIZE, next + ADDR_SIZE * 2 + ALLOC_SIZE);
 			}
 			else
 			{
-				printf("PREV(%p) && NEXT == NULL\n", prev);
+				//printf("PREV(%p) && NEXT == NULL\n", prev);
 				if (!verif_checksum(prev, HEADER_SIZE- CHECKSUM_SIZE))
 				{
-					printf("ABORT free munmap join prev page\n");
-					exit_abort(ptr);
+					//printf("ABORT free munmap join prev page\n");
+					return(exit_abort(ptr));
 				}
 			}
 			*(unsigned long*)(prev) = (unsigned long)next;
@@ -238,4 +248,5 @@ void free1(void *ptr)
 		mem->current = mem->root + HEADER_SIZE;
 		mem->map = mem->root;
 	}
+	show_alloc_mem();
 }

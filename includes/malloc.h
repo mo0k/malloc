@@ -5,7 +5,7 @@
 # include <sys/mman.h>
 # include <stdio.h>
 # include <string.h>
-# include <stdlib.h>
+# include <ft_printf.h>
 
 # define CHECKSUM_SIZE 2
 
@@ -45,7 +45,8 @@ typedef struct		s_memory{
 	void 			*root;
 	void 			*map;
 	void 			*current;
-	void			*free;
+	//void			*free;
+	//void			*next_zero;
 	enum e_types 	type;
 }					t_memory;
 
@@ -58,9 +59,16 @@ typedef struct 		s_data {
 
 t_data g_data;
 
-void 				free1(void *ptr);
-void 				*malloc1(size_t size);
+void 				free(void *ptr);
+void 				*malloc(size_t size);
 void 				*realloc(void *ptr, size_t size);
+void 				*calloc(size_t count, size_t size);
+void 				*valloc(size_t size);
+void 				*reallocf(void *ptr, size_t size);
+
+int		memory_manager(t_memory *mem, void *addr, size_t *size, size_t map_size);
+int 	manage_block_free(t_memory *mem, size_t *size, size_t map_size, size_t *sum);
+
 
 void 				print_map(void *page, size_t size);
 void 				*get_map(void *addr, size_t size);

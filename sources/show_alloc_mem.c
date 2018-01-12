@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/09 09:42:37 by mo0k              #+#    #+#             */
+/*   Updated: 2018/01/12 11:43:30 by mo0k             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <malloc.h>
 
 static void 	analyse_map_tiny_small(void *addr, size_t size)
@@ -5,36 +17,36 @@ static void 	analyse_map_tiny_small(void *addr, size_t size)
 	unsigned char *ptr;
 	size_t		blk_size;
 	ptr = (unsigned char*)addr+HEADER_SIZE;
-	//printf("start analyse_block ptr(%p):%c %d\n", ptr, *ptr, *ptr);
+	//ft_printf("start analyse_block ptr(%p):%c %d\n", ptr, *ptr, *ptr);
 	while (ptr)
 	{
-		//printf("(void*)ptr(%p)\taddr(%p) + size(%zd):(%p)(%c)\n", (void*)ptr, addr, size, addr + size, *ptr);
+		//ft_printf("(void*)ptr(%p)\taddr(%p) + size(%zd):(%p)(%c)\n", (void*)ptr, addr, size, addr + size, *ptr);
 		if (*ptr == 'M')
 		{
 			if (!verif_checksum(ptr, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 			{
-				printf("ABORT - analyse_block - M\n");
+				ft_printf("ABORT - analyse_block - M\n");
 				exit_abort(ptr + STRUCT_BLK_SIZE);
 			}
 			blk_size = *(size_t*)(ptr + FLAG_SIZE + ADDR_SIZE);
-			printf("\e[92mM\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
+			ft_printf("\e[92mM\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
 			 					ptr + STRUCT_BLK_SIZE + blk_size - 1, blk_size);
 		}
 		else if (*ptr == 'F')
 		{
 			if (!verif_checksum(ptr, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 			{
-				printf("ABORT - analyse_block - F\n");
+				ft_printf("ABORT - analyse_block - F\n");
 				exit_abort(ptr + STRUCT_BLK_SIZE);
 			}
 			blk_size = *(size_t*)(ptr + FLAG_SIZE + ADDR_SIZE);
-			printf("\e[91mF\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
-									ptr + STRUCT_BLK_SIZE + blk_size, blk_size);
+			ft_printf("\e[91mF\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
+									ptr + STRUCT_BLK_SIZE + blk_size - 1, blk_size);
 		}
 		else
 			return ;
 		ptr = next_block(ptr, addr, size);
-		//printf("ptr:%p\n", ptr);
+		//ft_printf("ptr:%p\n", ptr);
 	}
 	
 }
@@ -42,16 +54,16 @@ static void 	analyse_map_tiny_small(void *addr, size_t size)
 static void	show_alloc_mem_tiny_small(void *root, enum e_types type)
 {
 	void *map;
-	void *current;
+	//void *current;
 
 	map = root;
-	printf("1 map(%p)\n", map);
+	ft_printf("1 map(%p)\n", map);
 		while (map)
 		{
-			printf("2 map(%p)\n", map);
+			ft_printf("2 map(%p)\n", map);
 			if (!verif_checksum(map, HEADER_SIZE - CHECKSUM_SIZE))
 			{
-				printf("ABORT - show_alloc_mem tiny small header page\n");
+				ft_printf("ABORT - show_alloc_mem tiny small header page\n");
 				exit_abort(map);
 			}
 			//current = map + HEADER_SIZE;
@@ -65,28 +77,28 @@ static void 	analyse_map_large(void *addr)
 	unsigned char *ptr;
 	size_t		blk_size;
 	ptr = (unsigned char*)addr+HEADER_SIZE;
-	//printf("start analyse_block ptr(%p):%c %d\n", ptr, *ptr, *ptr);
+	//ft_printf("start analyse_block ptr(%p):%c %d\n", ptr, *ptr, *ptr);
 	if (*ptr == 'M')
 		{
 			if (!verif_checksum(ptr, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 			{
-				printf("ABORT - analyse_block - M\n");
+				ft_printf("ABORT - analyse_block - M\n");
 				exit_abort(ptr + STRUCT_BLK_SIZE);
 			}
 			blk_size = *(size_t*)(ptr + FLAG_SIZE + ADDR_SIZE);
-			printf("\e[92mM\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
+			ft_printf("\e[92mM\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
 			 					ptr + STRUCT_BLK_SIZE + blk_size - 1, blk_size);
 		}
 		else if (*ptr == 'F')
 		{
 			if (!verif_checksum(ptr, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 			{
-				printf("ABORT - analyse_block - F\n");
+				ft_printf("ABORT - analyse_block - F\n");
 				exit_abort(ptr + STRUCT_BLK_SIZE);
 			}
 			blk_size = *(size_t*)(ptr + FLAG_SIZE + ADDR_SIZE);
-			printf("\e[91mF\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
-									ptr + STRUCT_BLK_SIZE + blk_size, blk_size);
+			ft_printf("\e[91mF\e[39m %p - %p : %zd octects\n", ptr + STRUCT_BLK_SIZE,
+									ptr + STRUCT_BLK_SIZE + blk_size - 1, blk_size);
 		}
 		else
 			return ;	
@@ -102,16 +114,16 @@ static void show_alloc_mem_large(t_memory *mem)
 	map = mem->root;
 	while (map)
 	{
-		printf("2 map(%p)\n", map);
+		ft_printf("2 map(%p)\n", map);
 		if (!verif_checksum(map, HEADER_SIZE - CHECKSUM_SIZE))
 		{
-			printf("ABORT - show_alloc_mem large header page\n");
+			ft_printf("ABORT - show_alloc_mem large header page\n");
 			exit_abort(map);
 		}
 		/*current = map + HEADER_SIZE;
 		if (!verif_checksum(current, STRUCT_BLK_SIZE - CHECKSUM_SIZE))
 		{
-			printf("ABORT - show_alloc_mem large block\n");
+			ft_printf("ABORT - show_alloc_mem large block\n");
 			exit_abort(current + STRUCT_BLK_SIZE);
 		}*/
 		analyse_map_large(map);
@@ -121,25 +133,25 @@ static void show_alloc_mem_large(t_memory *mem)
 
 void	show_alloc_mem(void)
 {
-	printf("DEBUG - BEGIN show_alloc_mem\n");
+	ft_printf("DEBUG - BEGIN show_alloc_mem\n");
 	//void *map;
 	//void *current;
 
 	if (g_data.mem_tiny.root)
 	{
 		//map = g_data.mem_tiny.root;
-		printf("TINY:\n");
+		ft_printf("TINY:\n");
 		show_alloc_mem_tiny_small(g_data.mem_tiny.root, g_data.mem_tiny.type);
 		
 	}
 	if (g_data.mem_small.root)
 	{
-		printf("SMALL:\n");
+		ft_printf("SMALL:\n");
 		show_alloc_mem_tiny_small(g_data.mem_small.root, g_data.mem_small.type);	
 	}
 	if (g_data.mem_large.root)
 	{
-		printf("LARGE:\n");
+		ft_printf("LARGE:\n");
 		show_alloc_mem_large(&g_data.mem_large);
 	}
 }
