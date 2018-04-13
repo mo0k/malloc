@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 22:11:18 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/09 21:36:04 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/13 22:47:00 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static void		join_prev(t_hdr_blk *blk, t_hdr_page *page)
 		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 	if (page->last_blk == OFFSET(blk, page) && SET_LAST_BLK(page, prev))
 		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
+	display_hdr_blk(prev);
 }
 
 static void		join_next(t_hdr_blk *blk, t_hdr_page *page)
@@ -59,10 +60,16 @@ static void		join_next(t_hdr_blk *blk, t_hdr_page *page)
 	next = NEXT_FBLK(blk);
 	if (CHK_HEADER(next, OFFSET_CHKM(HDR_BLK_SIZE)))
 		kill_prog(CHECKSUM_CORRUPED, 7);
+	P_DEBUG_VARGS(LEVEL_3, "\t\tavant assign new blk:%p, free next:%p\n", blk, next);
+	//display_hdr_blk(blk);
+	//ft_printf("\nnext\n\n");
+	//display_hdr_blk(next);
 	blk->fnext = next->fnext ? blk->fnext + next->fnext : 0;
 	blk->bnext = next->bnext ? blk->bnext + next->bnext : 0;
 	blk->size += next->size + next->align + HDR_BLK_SIZE;
 	next = NEXT_FBLK(blk);
+	P_DEBUG_VARGS(LEVEL_3, "\t\tapres assign new blk:%p, free next:%p\n", blk, next);
+	//display_hdr_blk(blk);
 	if (next && CHK_HEADER(next, OFFSET_CHKM(HDR_BLK_SIZE)))
 		kill_prog(CHECKSUM_CORRUPED, 8);
 	(next) ? (next->fprev = blk->fnext) : 0;
@@ -94,7 +101,7 @@ void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 		P_DEBUG(LEVEL_3, "\t\tpage->free=0 go SET_FIRST_FREE\n");
 		SET_FIRST_FREE(page, blk);
 	}
-	(DEBUG == 3) ? display_hdr_blk(FIRST_FREE(page)) : 0;
+	//(DEBUG == 3) ? display_hdr_blk(FIRST_FREE(page)) : 0;
 	P_DEBUG_VARGS(LEVEL_3, "\t\tpage->free:%p\n", FIRST_FREE(page));
 	place_free_blk(blk, FIRST_FREE(page), page);
 	if (--page->nbr_blk == 0)
@@ -110,7 +117,7 @@ void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 		join_prev(blk, page);
 	if (blk->fnext && blk->fnext == blk->bnext)
 		join_next(blk, page);
-	
+	/*
 	//DEBUG LIST
 	t_hdr_blk *tmp = FIRST_BLK(page);
 	P_DEBUG_VARGS(LEVEL_3, "\t\ttmp:%p\n", tmp);
@@ -128,5 +135,5 @@ void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 		P_DEBUG(LEVEL_3, "\t\tnext\n");
 		tmp = NEXT_BLK(tmp);
 	}
-	(DEBUG == 3) ? display_hdr_page(page) : 0;
+	(DEBUG == 3) ? display_hdr_page(page) : 0;*/
 }

@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/09 21:38:29 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/11 19:49:08 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void 	*malloc(size_t size)
 					: manage_tiny_small(mem->page, size, mem->type);
 	//(DEBUG) ? show_alloc_mem() : 0;
 	P_DEBUG_VARGS(LEVEL_1, "\tblock created at %p\n", g_data.mem_ret);
+	show_alloc_mem();
 	//CLOSE_DEBUG();
 	return (g_data.mem_ret);
 }

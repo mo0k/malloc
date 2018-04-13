@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/09 21:36:53 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/11 22:17:08 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 int				manage_free_block(t_hdr_page *page, t_hdr_blk *free, size_t blk_size, size_t min_size)
 {
-	P_DEBUG(LEVEL_3, "\t\tmanage_free_block\n");
+	P_DEBUG_VARGS(LEVEL_3, "\t\tmanage_free_block blk_size:%zd\n", blk_size);
 
 	if (!free || !page)
 		return (ERROR_ARGS);
@@ -27,7 +27,7 @@ int				manage_free_block(t_hdr_page *page, t_hdr_blk *free, size_t blk_size, siz
 			kill_prog(CHECKSUM_CORRUPED, 14);
 	while (free)
 	{
-		P_DEBUG_VARGS(LEVEL_3, "\t\tfree:%p\n", free);
+		P_DEBUG_VARGS(LEVEL_3, "\t\tfree:%p, free->size:%d\n", free, free->size);
 		//checksum free blk
 		if (CHK_HEADER(free, OFFSET_CHKM(HDR_BLK_SIZE)))
 			kill_prog(CHECKSUM_CORRUPED, 15);

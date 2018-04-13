@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 00:01:33 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/09 21:38:39 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/11 19:50:28 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	free(void *ptr)
 	//OPEN_DEBUG();
 	P_DEBUG_VARGS(LEVEL_1, "{LRED}FREE{EOC}\taddress:%p\n", ptr);
 	//CLOSE_DEBUG();
-	return ;
-	P_DEBUG_VARGS(LEVEL_3, "\t\tSTART FREE ptr:%p\n", ptr);
+	//return ;
+	//P_DEBUG_VARGS(LEVEL_3, "\t\tSTART FREE ptr:%p\n", ptr);
 	//t_memory	mem;
 	t_free		free;
 	//t_hdr_page	*page;
@@ -38,14 +38,14 @@ void	free(void *ptr)
 	}
 	if (!(free.page = find_page(&g_data, ptr, &free.type)))
 	{
-		P_DEBUG(LEVEL_3, "\t\tfree page found\n");
+		P_DEBUG(LEVEL_3, "\t\tfree page not found\n");
 		return ;
 	}
 	if (free.type == LARGE)
 	{
 		//ft_printf("largeeeeeeeeee\n");
 		del_page(free.page, LARGE);
-		show_alloc_mem();
+		//show_alloc_mem();
 		return ;
 	}
 	if (!(free.blk = find_blk(free.page, ptr)))

@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 22:38:57 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/09 21:37:10 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/13 22:46:08 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static int		mid_place(t_hdr_blk *prev, t_hdr_blk *mid, t_hdr_blk *next)
 	mid->fprev = OFFSET(mid, prev);
 	mid->fnext = OFFSET(next, mid);
 	prev->fnext = mid->fprev;
-	next->fnext = mid->fprev;
+	//next->fnext = mid->fprev;
+	next->fprev = mid->fnext;
 	SET_CHKM(prev, OFFSET_CHKM(HDR_BLK_SIZE));
 	SET_CHKM(next, OFFSET_CHKM(HDR_BLK_SIZE));
 	return (BLOCK_FREE_PLACED);

@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/10 22:03:13 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/10 22:23:17 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ static t_hdr_page	*select_page(t_hdr_page *page, void *ptr)
 		 							,page, FIRST_BLK(page), END_PAGE(page), page->next, page->prev, page->size, NEXT_PAGE(page));
 		if (IN_PAGE(page, ptr))
 		{
+			P_DEBUG_VARGS(LEVEL_3, "next_page:%p\n", page->next);
+			(page->next) ? P_DEBUG_VARGS(LEVEL_3, "next_page:%p\n", ((t_hdr_page*)(page->next))->next) : 0;
 			return (page);
 		}
 		else

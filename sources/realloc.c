@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 23:49:34 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/10 19:58:09 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/13 13:34:52 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void 	expand_blk_in_freeblk(t_hdr_blk *blk, t_hdr_blk *free, size_t size, t_hdr_
 			new_blk->bprev = OFFSET(new_blk, blk); 
 			new_blk->fnext = tmp.fprev ? tmp.fnext - LEN_BLK(&tmp) : 0;
 			new_blk->fprev = tmp.fprev ? tmp.fprev + LEN_BLK(&tmp) : 0; 
-			display_hdr_blk(new_blk);
+			//display_hdr_blk(new_blk);
 			SET_CHKM(new_blk, OFFSET_CHKM(HDR_BLK_SIZE));
 			//free->bnext = new_blk->bprev;
 			//free->fnext = new_blk->fprev;
@@ -205,7 +205,7 @@ void *realloc(void *ptr, size_t size)
 	{
 		//CLOSE_DEBUG();
 		P_DEBUG(LEVEL_2, "\t\tsize <= (size_t)blk->size\n");
-		(DEBUG <= 2) ? display_hdr_blk(blk) : 0;
+		(DEBUG <= 4) ? display_hdr_blk(blk) : 0;
 		return (ptr);
 	}
 	else
@@ -257,7 +257,9 @@ void *realloc(void *ptr, size_t size)
 				return (new);
 			}
 			//CLOSE_DEBUG();
-			(DEBUG <= 2) ? display_hdr_blk(blk) : 0;
+			(DEBUG <= 4) ? display_hdr_blk(blk) : 0;
+	show_alloc_mem();
+			
 			return(BEGIN_BLK(blk));
 		}
 	}
