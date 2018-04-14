@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:40 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/09 22:33:07 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/14 10:50:40 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct		s_header_page
 # define MIN_SIZE(type) ((type) == TINY ? 1 : TINY_MAX + 1)
 # define MIN_SIZE_REMAINING(blk, page, type) (HDR_BLK_SIZE + MIN_SIZE(type) > \
 										END_PAGE((page)) - END_BLK((blk)))
-# define LARGE_SIZE(size) ((size) + HDR_PAGE_SIZE * HDR_BLK_SIZE)
+# define LARGE_SIZE(size) ((size) + HDR_PAGE_SIZE + HDR_BLK_SIZE)
 
 # define NEW_PAGE(size) (mmap(NULL, (size), PROT_WRITE | PROT_READ,\
 			MAP_ANON | MAP_PRIVATE, -1, 0))

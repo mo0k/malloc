@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 22:11:18 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/13 22:47:00 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/14 10:39:32 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,9 @@ static void		join_next(t_hdr_blk *blk, t_hdr_page *page)
 
 void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 {
+	int flag;
+
+	flag = 0;
 	P_DEBUG(LEVEL_3, "\t\tCREATE_FREE_BLOCK\n");
 	if (page == 0 || blk == 0)
 		return ;
@@ -113,10 +116,10 @@ void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 	P_DEBUG_VARGS(LEVEL_3, "\t\tnbr_blk:%d\n", page->nbr_blk);
 	SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 	SET_CHKM(blk, OFFSET_CHKM(HDR_BLK_SIZE));
-	if (blk->fprev && blk->fprev == blk->bprev)
+	if (blk->fprev && blk->fprev == blk->bprev && (flag = 1))
 		join_prev(blk, page);
 	if (blk->fnext && blk->fnext == blk->bnext)
-		join_next(blk, page);
+		join_next(flag ? PREV_BLK(blk) : blk, page);
 	/*
 	//DEBUG LIST
 	t_hdr_blk *tmp = FIRST_BLK(page);
