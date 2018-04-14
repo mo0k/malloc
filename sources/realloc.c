@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 23:49:34 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/13 13:34:52 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/14 14:25:21 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ t_hdr_page *expand_page(t_hdr_page *page, size_t size)
 	if (!page || !size)
 		return (0);
 	initialize_page(&new, 0, LARGE_SIZE(size));
-	//ft_memmove(new, page,
-	//		page->size > LARGE_SIZE(size) ? page->size : LARGE_SIZE(size));
+	//ft_memmove(FIRST_BLK(new), FIRST_BLK(page), FIRST_BLK(page)->size);
+	ft_memmove(new, page, page->size > new->size ? new->size : page->size);
 	SET_CHKM(new, OFFSET_CHKM(HDR_PAGE_SIZE));
 	DEL_PAGE(page);
 	if (prev && CHK_HEADER(prev, OFFSET_CHKM(HDR_PAGE_SIZE)))
@@ -49,7 +49,10 @@ t_hdr_page *expand_page(t_hdr_page *page, size_t size)
 		(next) ? next->prev = new : 0;
 	}
 	else
+	{
+		prev->next = new;
 		(next) ? next->prev = new : 0;
+	}
 	(prev) ? SET_CHKM(prev, OFFSET_CHKM(HDR_PAGE_SIZE)) : 0;
 	(next) ? SET_CHKM(next, OFFSET_CHKM(HDR_PAGE_SIZE)) : 0;
 	return (new);
