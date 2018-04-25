@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 00:01:33 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/11 19:50:28 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/24 21:58:13 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,5 @@ void	free(void *ptr)
 		return ;
 	}
 	create_free_blk(free.blk, free.page, free.type);
-	show_alloc_mem();
+	//show_alloc_mem();
 }

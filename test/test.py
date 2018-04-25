@@ -13,7 +13,7 @@ os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
 bin_folder = "bin/"
 test_files = ["test0.c", "test1.c", "test2.c", "test3.c",
         "test3++.c", "test4.c"]
-lib_inc = "../../inc"
+lib_inc = "../libftprintf/includes"
 
 #############################################################
 # functions

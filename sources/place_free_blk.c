@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 22:38:57 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/13 22:46:08 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/25 22:49:19 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ int 			place_free_blk(t_hdr_blk *blk, t_hdr_blk *free, t_hdr_page *page)
 			return (last_place(blk, free) == BLOCK_FREE_PLACED);
 		else if (blk < free && first_place(blk, free) == BLOCK_FREE_PLACED)
 		{
-			SET_FIRST_FREE(page, blk);
+			//SET_FIRST_FREE(page, blk);
+			page->free = blk;
 			return (BLOCK_FREE_PLACED);
 		}
 		free = next;

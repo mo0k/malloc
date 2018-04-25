@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/10 22:23:17 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/25 22:48:58 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void 	display_hdr_page(t_hdr_page *hdr_page)
 	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->prev:%p\n", hdr_page->prev);
 	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->next:%p\n", hdr_page->next);
 	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->size:%d\n", hdr_page->size);
-	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->last_blk(%p):%d\n", LAST_BLK(hdr_page), hdr_page->last_blk);
-	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->free(%p):%d\n", FIRST_FREE(hdr_page), hdr_page->free);
+	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->last_blk(%p):%d\n", hdr_page->last_blk, hdr_page->last_blk);
+	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->free(%p):%d\n", hdr_page->free, hdr_page->free);
 	P_DEBUG_VARGS(LEVEL_3, "\t\thdr_page->nbr_blk:%hd\n", hdr_page->nbr_blk);
 	P_DEBUG_VARGS(LEVEL_3, "\t\tchecksum:0x%02x 0x%02x\n", hdr_page->chkm[0], hdr_page->chkm[1]);
 }

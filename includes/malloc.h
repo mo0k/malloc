@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:40 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/14 10:50:40 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/25 22:22:42 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,25 @@
 # include <string.h>
 # include <signal.h>
 # include <ft_printf.h>
-# include <debug.h>
+# include "debug.h"
 
-# define HDR_PAGE_SIZE 32
-# define HDR_BLK_SIZE 16
-# define CHKM_SIZE 2
-# define TINY_MAX 512
-# define SMALL_MAX 2048
+# define HDR_PAGE_SIZE sizeof(t_hdr_page)
+# define HDR_BLK_SIZE sizeof(t_hdr_blk)
+# define CHKM_SIZE 2U
+# define TINY_MAX 128U
+# define SMALL_MAX 2048U
 # define TINY_PAGE_SIZE getpagesize() * 13
 # define SMALL_PAGE_SIZE getpagesize() * 50
 
 typedef struct 		s_header_block
 {
-	short int		bprev;
-	short int		bnext;
-	short int 		fprev;
-	short int 		fnext;
+	unsigned int	bprev;
+	unsigned int	bnext;
+	unsigned int 	fprev;
+	unsigned int 	fnext;
 	unsigned int	size;
 	short int		align;
-	//char 			padding[2];
+	char 			padding[8];
 	unsigned char	chkm[CHKM_SIZE];
 }					t_hdr_blk;
 
@@ -45,19 +45,21 @@ typedef struct		s_header_page
 {
 	void			*prev;
 	void			*next;
-	unsigned int	size;
-	unsigned int 	last_blk;
-	unsigned int 	free;
-	short int 		nbr_blk;
+	t_hdr_blk 		*last_blk;
+	t_hdr_blk 		*free;
+	size_t			size; //40
+	unsigned int 	nbr_blk; //44
+	char 			align[2]; //46
 	unsigned char	chkm[CHKM_SIZE];	
 }					t_hdr_page;
 
+int g_debugging;
 
 # define AVAILABLE_BLK(blk, page) ((void*)((void*)(blk) + HDR_BLK_SIZE + (blk)->size + (blk)->align) < \
 									(void*)((void*)(page) + (page)->size))
-# define MIN_SIZE(type) ((type) == TINY ? 1 : TINY_MAX + 1)
+# define MIN_SIZE(type) ((type) == TINY ? 1U : TINY_MAX + 1U)
 # define MIN_SIZE_REMAINING(blk, page, type) (HDR_BLK_SIZE + MIN_SIZE(type) > \
-										END_PAGE((page)) - END_BLK((blk)))
+										(unsigned long)(END_PAGE((page)) - END_BLK((blk))))
 # define LARGE_SIZE(size) ((size) + HDR_PAGE_SIZE + HDR_BLK_SIZE)
 
 # define NEW_PAGE(size) (mmap(NULL, (size), PROT_WRITE | PROT_READ,\
@@ -67,12 +69,12 @@ typedef struct		s_header_page
 # define PREV_PAGE(page) ((page)->prev)
 # define END_PAGE(page) ((void*)(page) + (page)->size) //not use for lange
 # define IN_PAGE(pg, pt) ((pt) > (void*)(FIRST_BLK((pg))) && (pt) < END_PAGE((pg)))
-# define SET_LAST_BLK(p, b) ((p)->last_blk = (void*)(b) - (void*)(p))
-# define FIRST_FREE(p) ((p)->free ? (t_hdr_blk*)((void*)(p) + (p)->free) : 0)
-# define SET_FIRST_FREE(p, b) ((p)->free = (void*)(b) - (void*)(p))
+//# define SET_LAST_BLK(p, b) ((p)->last_blk = (void*)(b))
+//# define LAST_BLK(p) ((t_hdr_blk*)(p)->last_blk)
+//# define FIRST_FREE(p) ((p)->free ? (t_hdr_blk*)((void*)(p) + (p)->free) : 0)
+//# define SET_FIRST_FREE(p, b) ((p)->free = (void*)(b) - (void*)(p))
 
 # define FIRST_BLK(p) ((t_hdr_blk*)((void*)(p) + HDR_PAGE_SIZE))
-# define LAST_BLK(p) ((t_hdr_blk*)((void*)(p) + (p)->last_blk))
 # define BEGIN_BLK(b) ((void*)(b) + HDR_BLK_SIZE + (b)->align)
 # define END_BLK(b) (((void*)(b) + HDR_BLK_SIZE + (b)->align + (b)->size))
 # define LEN_BLK(b) (HDR_BLK_SIZE + (b)->align + (b)->size)
@@ -140,6 +142,7 @@ t_data 				g_data;
 void 				*malloc(size_t size);
 void				free(void *ptr);
 void 				*realloc(void *ptr, size_t size);
+void 				*calloc(size_t count, size_t size);
 void				show_alloc_mem(void);
 
 /*

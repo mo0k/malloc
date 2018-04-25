@@ -6,14 +6,14 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 22:11:18 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/14 10:39:32 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/25 23:04:29 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 void 	display_hdr_page(t_hdr_page *hdr_page);
 void 	display_hdr_blk(t_hdr_blk *hdr_blk);
-
+/*
 static void		join_prev(t_hdr_blk *blk, t_hdr_page *page)
 {
 	t_hdr_blk *prev;
@@ -43,10 +43,14 @@ static void		join_prev(t_hdr_blk *blk, t_hdr_page *page)
 	(next) ? (next->bprev = prev->bnext) : 0;
 	(next) ? SET_CHKM(next, OFFSET_CHKM(HDR_BLK_SIZE)) : 0;
 	SET_CHKM(prev, OFFSET_CHKM(HDR_BLK_SIZE));
-	if (page->free > OFFSET(prev, page) && SET_FIRST_FREE(page, prev))
+	if (page->free > prev && (page->free = prev))
 		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
-	if (page->last_blk == OFFSET(blk, page) && SET_LAST_BLK(page, prev))
+	if (page->last_blk == blk && (page->last_blk = prev))
+	{
+		P_DEBUG_VARGS(LEVEL_2, "changement last_blk:{cyan}%p{eoc}\n", page->last_blk);
+		//sleep(5);
 		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
+	}
 	display_hdr_blk(prev);
 }
 
@@ -64,6 +68,14 @@ static void		join_next(t_hdr_blk *blk, t_hdr_page *page)
 	//display_hdr_blk(blk);
 	//ft_printf("\nnext\n\n");
 	//display_hdr_blk(next);
+
+	if (page->last_blk == next && (page->last_blk = blk))
+	{
+		P_DEBUG_VARGS(LEVEL_2, "changement last_blk:{cyan}%p{eoc} next:%p\n", page->last_blk, next);
+		//sleep(5);
+		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
+	}
+
 	blk->fnext = next->fnext ? blk->fnext + next->fnext : 0;
 	blk->bnext = next->bnext ? blk->bnext + next->bnext : 0;
 	blk->size += next->size + next->align + HDR_BLK_SIZE;
@@ -84,12 +96,10 @@ static void		join_next(t_hdr_blk *blk, t_hdr_page *page)
 	(next) ? next->bprev = blk->bnext : 0;
 	(next) ? SET_CHKM(next, OFFSET_CHKM(HDR_BLK_SIZE)) : 0;
 	SET_CHKM(blk, OFFSET_CHKM(HDR_BLK_SIZE));
-	if (page->free > OFFSET(blk, page) && SET_FIRST_FREE(page, blk))
-		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
-	if (page->last_blk == OFFSET(next, page) && SET_LAST_BLK(page, blk))
+	if (page->free > blk && (page->free = blk))
 		SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 }
-
+*/
 void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 {
 	int flag;
@@ -102,11 +112,12 @@ void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 	if (page->free == 0)
 	{
 		P_DEBUG(LEVEL_3, "\t\tpage->free=0 go SET_FIRST_FREE\n");
-		SET_FIRST_FREE(page, blk);
+		//SET_FIRST_FREE(page, blk);
+		page->free = blk;
 	}
 	//(DEBUG == 3) ? display_hdr_blk(FIRST_FREE(page)) : 0;
-	P_DEBUG_VARGS(LEVEL_3, "\t\tpage->free:%p\n", FIRST_FREE(page));
-	place_free_blk(blk, FIRST_FREE(page), page);
+	P_DEBUG_VARGS(LEVEL_3, "\t\tpage->free:%p\n", page->free);
+	place_free_blk(blk, page->free, page);
 	if (--page->nbr_blk == 0)
 	{
 		P_DEBUG(LEVEL_3, "\t\tgo mummap\n");
@@ -116,10 +127,13 @@ void			create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 	P_DEBUG_VARGS(LEVEL_3, "\t\tnbr_blk:%d\n", page->nbr_blk);
 	SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 	SET_CHKM(blk, OFFSET_CHKM(HDR_BLK_SIZE));
-	if (blk->fprev && blk->fprev == blk->bprev && (flag = 1))
-		join_prev(blk, page);
-	if (blk->fnext && blk->fnext == blk->bnext)
-		join_next(flag ? PREV_BLK(blk) : blk, page);
+	//if (blk->fprev && blk->fprev == blk->bprev && (flag = 1))
+	//	join_prev(blk, page);
+	//if (blk->fnext && blk->fnext == blk->bnext)
+	//	join_next(flag ? PREV_BLK(blk) : blk, page);
+	
+	//display_hdr_page(page);
+
 	/*
 	//DEBUG LIST
 	t_hdr_blk *tmp = FIRST_BLK(page);

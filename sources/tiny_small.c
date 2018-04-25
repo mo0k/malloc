@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/13 13:36:08 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/25 22:51:45 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@ void	manage_tiny_small(t_hdr_page *page, size_t size, enum e_types type)
 
 		t_hdr_blk	*blk;
 		P_DEBUG_VARGS(LEVEL_3, "\t\tpage:%p\n", page);
-		blk = ret.page->last_blk ? NEXT_BLK(LAST_BLK(ret.page)) : FIRST_BLK(ret.page);
+		blk = ret.page->last_blk ? NEXT_BLK(ret.page->last_blk) : FIRST_BLK(ret.page);
 		P_DEBUG_VARGS(LEVEL_3, "\t\tcreate block(%p)\n", blk);
 		create_new_block(blk, ret.page);
 		P_DEBUG_VARGS(LEVEL_3, "\t\t1.1 create page->last_blk:%d\n", ret.page->last_blk);
-		SET_LAST_BLK(ret.page, blk);
+		//SET_LAST_BLK(ret.page, blk);
+		ret.page->last_blk = blk;
 		++ret.page->nbr_blk;
 		P_DEBUG_VARGS(LEVEL_3, "\t\t1.2 create page->last_blk:%d\n", ret.page->last_blk);
 		SET_CHKM(ret.page, OFFSET_CHKM(HDR_PAGE_SIZE));
@@ -35,6 +36,8 @@ void	manage_tiny_small(t_hdr_page *page, size_t size, enum e_types type)
 		(DEBUG >= 3) ? display_hdr_page(page) : 0;
 		g_data.mem_ret = BEGIN_BLK(blk);
 		P_DEBUG_VARGS(LEVEL_2, "\t\t%d-byte block created at %p\n", blk->size, BEGIN_BLK(blk));
+		display_hdr_blk(blk);
+		
 	}
 	else if (ret.value == CREATE_NEW_PAGE)
 	{
@@ -53,14 +56,15 @@ void	manage_tiny_small(t_hdr_page *page, size_t size, enum e_types type)
 		check_space_and_align(ret.page, blk, type);
 		create_new_block(blk, ret.page);
 		P_DEBUG_VARGS(LEVEL_3, "\t\t2.1 create page->last_blk:%d\n", ret.page->last_blk);
-
-		SET_LAST_BLK(ret.page, blk);
+		ret.page->last_blk = blk;
+		//SET_LAST_BLK(ret.page, blk);
 		P_DEBUG_VARGS(LEVEL_3, "\t\t2.2 create page->last_blk:%d\n", ret.page->last_blk);
 		++ret.page->nbr_blk;
 		SET_CHKM(ret.page, OFFSET_CHKM(HDR_PAGE_SIZE));
 		(DEBUG >= 3) ? display_hdr_blk(blk) : 0;
 		g_data.mem_ret = BEGIN_BLK(blk);
 		P_DEBUG_VARGS(LEVEL_2, "\t\t%d-byte block created at %p\n", blk->size, BEGIN_BLK(blk));
+	display_hdr_blk(blk);
 	}
 	//print_page((void*)mem->page, 4096);
 	P_DEBUG(LEVEL_3, "\t\t\n");

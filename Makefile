@@ -6,7 +6,7 @@
 #    By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 09:22:47 by mo0k              #+#    #+#              #
-#    Updated: 2018/04/08 16:42:00 by mo0k             ###   ########.fr        #
+#    Updated: 2018/04/24 22:29:32 by mo0k             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRCS_PATH = sources
 SRCS = $(SRCS_PATH)/malloc.c 					\
 		$(SRCS_PATH)/free.c 					\
 		$(SRCS_PATH)/realloc.c 					\
+		$(SRCS_PATH)/calloc.c 					\
 		$(SRCS_PATH)/show_alloc_mem.c 			\
 		$(SRCS_PATH)/block.c 					\
 		$(SRCS_PATH)/check_space_and_align.c 	\
