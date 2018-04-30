@@ -10,7 +10,7 @@ int main(void)
 	//printf("sizeof:%zd\n", sizeof(unsigned short int));
 	//printf("sizeof HDR_SIZE:%zd\n", sizeof(t_hdr_blk));
 	printf("OPEN_DEBUG:%d\n", OPEN_DEBUG());
-	CLOSE_DEBUG();
+       	CLOSE_DEBUG();
 	yo
 	return (0);
 }

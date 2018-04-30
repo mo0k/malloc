@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/03/07 22:07:32 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/29 11:52:07 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,4 @@ void 			initialize_memory(t_memory *mem, enum e_types type, size_t size)
 	pagesize = type == LARGE ? LARGE_SIZE(size) : page_size(type);
 	mem->type = type;
 	initialize_page(&mem->page, 0, pagesize);
-	//mem->page = initialize_page2(0, pagesize);
 }

@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/04 00:01:33 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/24 21:58:13 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/29 23:29:17 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,38 +21,19 @@ typedef struct	s_free
 
 void	free(void *ptr)
 {
-	//OPEN_DEBUG();
-	P_DEBUG_VARGS(LEVEL_1, "{LRED}FREE{EOC}\taddress:%p\n", ptr);
-	//CLOSE_DEBUG();
-	//return ;
-	//P_DEBUG_VARGS(LEVEL_3, "\t\tSTART FREE ptr:%p\n", ptr);
-	//t_memory	mem;
+	P_DEBUG_FILE_VARGS(LEVEL_1, "%s call free(%p)\n", get_progname("_"), ptr);
 	t_free		free;
-	//t_hdr_page	*page;
-	//t_hdr_blk	*blk;
 
 	if (ptr == 0)
-	{
-		P_DEBUG(LEVEL_3, "\t\tfree ptr == NULL\n");
 		return ;
-	}
 	if (!(free.page = find_page(&g_data, ptr, &free.type)))
-	{
-		P_DEBUG(LEVEL_3, "\t\tfree page not found\n");
 		return ;
-	}
 	if (free.type == LARGE)
 	{
-		//ft_printf("largeeeeeeeeee\n");
 		del_page(free.page, LARGE);
-		//show_alloc_mem();
 		return ;
 	}
 	if (!(free.blk = find_blk(free.page, ptr)))
-	{
-		P_DEBUG(LEVEL_3, "\t\tfree no block found\n");
 		return ;
-	}
 	create_free_blk(free.blk, free.page, free.type);
-	//show_alloc_mem();
 }

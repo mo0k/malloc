@@ -6,7 +6,7 @@
 #    By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 09:22:47 by mo0k              #+#    #+#              #
-#    Updated: 2018/04/24 22:29:32 by mo0k             ###   ########.fr        #
+#    Updated: 2018/04/29 23:17:49 by mo0k             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,7 @@ ECHO = echo -n
 all: $(NAME)
 
 $(NAME): $(LIB) $(INCS) $(OBJS_PATH) $(OBJS) Makefile
-	@$(CC) $(CFLAGS) -shared $(OBJS) -o $(NAME) -L $(LIBPRINT_PATH) -lftprintf
+	@$(CC) -shared $(OBJS) -o $(NAME) -L $(LIBPRINT_PATH) -lftprintf
 	@/bin/rm -f libft_malloc.so
 	@ln -s $(NAME) libft_malloc.so
 	@echo $(C_LGREEN)"$(NAME) compiled"$(C_DFL)

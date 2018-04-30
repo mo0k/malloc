@@ -6,7 +6,7 @@
 /*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:40 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/25 22:22:42 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/04/29 23:15:59 by mo0k             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # define SMALL_MAX 2048U
 # define TINY_PAGE_SIZE getpagesize() * 13
 # define SMALL_PAGE_SIZE getpagesize() * 50
+
+extern char **environ;
 
 typedef struct 		s_header_block
 {
@@ -53,8 +55,6 @@ typedef struct		s_header_page
 	unsigned char	chkm[CHKM_SIZE];	
 }					t_hdr_page;
 
-int g_debugging;
-
 # define AVAILABLE_BLK(blk, page) ((void*)((void*)(blk) + HDR_BLK_SIZE + (blk)->size + (blk)->align) < \
 									(void*)((void*)(page) + (page)->size))
 # define MIN_SIZE(type) ((type) == TINY ? 1U : TINY_MAX + 1U)
@@ -69,10 +69,6 @@ int g_debugging;
 # define PREV_PAGE(page) ((page)->prev)
 # define END_PAGE(page) ((void*)(page) + (page)->size) //not use for lange
 # define IN_PAGE(pg, pt) ((pt) > (void*)(FIRST_BLK((pg))) && (pt) < END_PAGE((pg)))
-//# define SET_LAST_BLK(p, b) ((p)->last_blk = (void*)(b))
-//# define LAST_BLK(p) ((t_hdr_blk*)(p)->last_blk)
-//# define FIRST_FREE(p) ((p)->free ? (t_hdr_blk*)((void*)(p) + (p)->free) : 0)
-//# define SET_FIRST_FREE(p, b) ((p)->free = (void*)(b) - (void*)(p))
 
 # define FIRST_BLK(p) ((t_hdr_blk*)((void*)(p) + HDR_PAGE_SIZE))
 # define BEGIN_BLK(b) ((void*)(b) + HDR_BLK_SIZE + (b)->align)
@@ -158,7 +154,6 @@ void 				initialize_page(t_hdr_page **page, t_hdr_page *prev, unsigned int page_
 int 				page_size(enum e_types type);
 t_hdr_page			*find_page(t_data *data, void *ptr, enum e_types *type);
 void 				display_hdr_page(t_hdr_page *hdr_page);
-void 				print_page(void *page, size_t size);//DEBUG
 void				del_page(t_hdr_page *page, enum e_types type);
 
 
@@ -187,7 +182,7 @@ void 				*checksum(void *header, size_t size);
 **	Tiny - Small
 */
 void				manage_tiny_small(t_hdr_page *page, size_t size, enum e_types type);
-t_ret_manager		*memory_manager(t_hdr_page *page, size_t blk_size, enum e_types type, t_ret_manager *ret, int count);
+t_ret_manager		*memory_manager(t_hdr_page *page, size_t blk_size, enum e_types type, t_ret_manager *ret);
 
 /*
 **	Large
@@ -201,5 +196,7 @@ void				kill_prog(int flag, int count);
 int 				check_space_and_align(t_hdr_page *page, t_hdr_blk *blk, enum e_types type);
 int 				check_align(t_hdr_blk *new_blk, void *limit_end, size_t min_size);
 
+char 				*getenv(char *name);
+char 				*get_progname(char *env_key);
 
 #endif
