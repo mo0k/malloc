@@ -81,6 +81,7 @@ fclean: clean
 	@if [ -e $(NAME) ]; \
 	then echo $(C_RED)"Delete $(NAME)."$(C_DFL); \
 	fi;
+	@/bin/rm -f libft_malloc.so
 	@/bin/rm -f $(NAME)
 
 re: fclean all
