@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   block.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sle-lieg <sle-lieg@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/23 16:22:33 by sle-lieg         ###   ########.fr       */
+/*   Created: 2018/02/10 15:12:43 by jmoucade          #+#    #+#             */
+/*   Updated: 2018/07/23 23:06:54 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void			display_hdr_blk(t_hdr_blk *hdr_blk)
 	if (!hdr_blk)
 		return ;
 	DEBUGV("\t\thdr_blk:%p\n", hdr_blk);
-	DEBUGV("\t\thdr_blk->block_prev(%p):%hd\n"
+	DEBUGV("\t\thdr_blk->block_prev(%p):%hd\n"	
 		, PREV_BLK(hdr_blk), hdr_blk->bprev);
 	DEBUGV("\t\thdr_blk->block_next(%p):%hd\n"
 		, NEXT_BLK(hdr_blk), hdr_blk->bnext);
