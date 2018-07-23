@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sle-lieg <sle-lieg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/22 23:10:51 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/23 16:22:33 by sle-lieg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	*malloc(size_t size)
 	DEBUGV("%s call malloc(%d)\n"
 				, get_progname("_")
 				, size);
-	type = type_block(size);
+	type = typ_blk(size);
 	mem = memory_by_type(&g_data, type);
 	if (mem->page == NULL)
 		initialize_memory(mem, type, size);

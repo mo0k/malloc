@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory_manager.c                                   :+:      :+:    :+:   */
+/*   manage_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sle-lieg <sle-lieg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/22 23:25:30 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/23 16:38:06 by sle-lieg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ static void				fix_header(t_hdr_page *page, t_hdr_blk *free, \
 	++page->nbr_blk;
 	(next) ? SET_CHKM(next, OFFSET_CHKM(HDR_BLK_SIZE)) : 0;
 	(prev) ? SET_CHKM(prev, OFFSET_CHKM(HDR_BLK_SIZE)) : 0;
-	(prev) ? display_hdr_blk(prev) : 0;
-	(next) ? display_hdr_blk(next) : 0;
 	SET_CHKM(free, OFFSET_CHKM(HDR_BLK_SIZE));
 	SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 	g_data.mem_ret = BEGIN_BLK(free);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   realloc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sle-lieg <sle-lieg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 23:49:34 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/23 04:43:39 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/23 16:32:03 by sle-lieg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,30 +86,30 @@ void			*realloc_end(void *ptr, size_t size, t_hdr_blk *blk)
 	}
 }
 
-void			*realloc(void *ptr, size_t size)
+void			*realloc(void *ptr, size_t sz)
 {
-	t_hdr_page		*page;
+	t_hdr_page		*p;
 	t_hdr_blk		*blk;
-	enum e_types	type;
+	enum e_types	t;
 
 	pthread_mutex_lock(&g_mutex);
-	DEBUGV("%s call realloc(%p, %zd)\n", get_progname("_"), ptr, size);
-	if (ptr && size == 0)
+	DEBUGV("%s call realloc(%p, %zd)\n", get_progname("_"), ptr, sz);
+	if (ptr && sz == 0)
 		return (get_min_objet(ptr));
-	if (!ptr && pthread_mutex_unlock(&g_mutex))
-		return (malloc(size > 0 ? size : MIN_SIZE_OBJ));
-	if (!(page = find_page(&g_data, ptr, &type))
-		&& pthread_mutex_unlock(&g_mutex))
-		return (ptr);
-	if (type == LARGE && type_block(size) == LARGE
-						&& (size_t)FIRST_BLK(page)->size < size)
+	if (!ptr)
 	{
-		if ((page = expand_page(page, size)))
-			return (BEGIN_BLK(FIRST_BLK(page)));
-		else
-			return (get_min_objet(ptr));
+		pthread_mutex_unlock(&g_mutex);
+		return (malloc(sz > 0 ? sz : MIN_SIZE_OBJ));
 	}
-	blk = find_blk(page, ptr);
+	if (!(p = find_page(&g_data, ptr, &t)))
+	{
+		pthread_mutex_unlock(&g_mutex);
+		return (ptr);
+	}
+	if (t == LARGE && typ_blk(sz) == LARGE && (size_t)FIRST_BLK(p)->size < sz)
+		return ((p = expand_page(p, sz)) ? BEGIN_BLK(FIRST_BLK(p)) \
+										: get_min_objet(ptr));
+		blk = find_blk(p, ptr);
 	pthread_mutex_unlock(&g_mutex);
-	return (blk == 0 ? NULL : realloc_end(ptr, size, blk));
+	return (blk == 0 ? NULL : realloc_end(ptr, sz, blk));
 }

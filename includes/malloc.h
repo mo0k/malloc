@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sle-lieg <sle-lieg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:40 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/22 23:25:38 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/23 16:22:33 by sle-lieg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void				del_page(t_hdr_page *page, enum e_types type);
 /*
 **	Block
 */
-enum e_types		type_block(size_t size);
+enum e_types		typ_blk(size_t size);
 void				create_new_block(t_hdr_blk *block, t_hdr_page *page);
 t_hdr_blk			*find_blk(t_hdr_page *page, void *ptr);
 void				display_hdr_blk(t_hdr_blk *hdr_blk);
@@ -220,7 +220,6 @@ int					check_space_and_align(t_hdr_page *page, t_hdr_blk *blk, \
 															enum e_types type);
 int					check_align(t_hdr_blk *new_blk, void *limit_end, \
 															size_t min_size);
-char				*getenv(char *name);
 char				*get_progname(char *env_key);
 char				*is_dbg(char *env_key);
 

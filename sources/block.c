@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   block.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sle-lieg <sle-lieg@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/22 23:10:33 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/23 16:22:33 by sle-lieg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void			display_hdr_blk(t_hdr_blk *hdr_blk)
 		, (void*)hdr_blk + HDR_BLK_SIZE + hdr_blk->align);
 }
 
-enum e_types	type_block(size_t size)
+enum e_types	typ_blk(size_t size)
 {
 	if (size <= TINY_MAX)
 		return (TINY);
