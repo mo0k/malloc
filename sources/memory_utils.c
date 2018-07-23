@@ -24,8 +24,10 @@ t_memory		*memory_by_type(t_data *data, enum e_types type)
 
 void			initialize_memory(t_memory *mem, enum e_types type, size_t size)
 {
-	unsigned int	pagesize;
+	unsigned int			pagesize;
+	static pthread_mutex_t  g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+	(void)g_mutex;
 	pagesize = type == LARGE ? LARGE_SIZE(size) : page_size(type);
 	mem->type = type;
 	initialize_page(&mem->page, 0, pagesize);

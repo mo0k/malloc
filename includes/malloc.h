@@ -13,6 +13,7 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 
+# include <pthread.h>
 # include <unistd.h>
 # include <sys/mman.h>
 # include <stdio.h>
@@ -31,6 +32,7 @@
 #define MIN_SIZE_OBJ 16
 
 extern char **environ;
+
 
 typedef struct 		s_header_block
 {
@@ -70,6 +72,7 @@ typedef struct		s_header_page
 # define PREV_PAGE(page) ((page)->prev)
 # define END_PAGE(page) ((void*)(page) + (page)->size) //not use for lange
 # define IN_PAGE(pg, pt) ((pt) > (void*)(FIRST_BLK((pg))) && (pt) < END_PAGE((pg)))
+# define ISSUE(p, b) (b ? (unsigned int)(p->free = 0) : (b->fnext = 0))
 
 # define FIRST_BLK(p) ((t_hdr_blk*)((void*)(p) + HDR_PAGE_SIZE))
 # define BEGIN_BLK(b) ((void*)(b) + HDR_BLK_SIZE + (b)->align)
@@ -122,6 +125,13 @@ enum e_types
 	LARGE
 };
 
+typedef struct		s_info
+{
+	t_hdr_page 		*page;
+	t_hdr_blk		*blk;
+	enum e_types 	type;
+}					t_info;
+
 typedef struct	s_free
 {
 	t_hdr_page		*page;
@@ -142,6 +152,7 @@ typedef struct 		s_data {
 } 					t_data;
 
 t_data 				g_data;
+pthread_mutex_t		g_mutex;
 
 void 				*malloc(size_t size);
 void				free(void *ptr);
@@ -176,6 +187,8 @@ void 				display_hdr_blk(t_hdr_blk *hdr_blk);
 /*
 **	Free block
 */
+int						manage_free_block(t_hdr_page *page, t_hdr_blk *free, \
+														size_t blk_sz);
 void				create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type);
 int 				place_free_blk(t_hdr_blk *blk, t_hdr_blk *free, t_hdr_page *page);
 
@@ -206,5 +219,7 @@ int 				check_align(t_hdr_blk *new_blk, void *limit_end, size_t min_size);
 
 char 				*getenv(char *name);
 char 				*get_progname(char *env_key);
+char				*is_dbg(char *env_key);
+
 
 #endif

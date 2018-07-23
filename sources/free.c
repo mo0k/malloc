@@ -16,10 +16,9 @@ void	free(void *ptr)
 {
 	t_free		free;
 
-	P_DEBUG_FILE_VARGS(LEVEL_1
-						, "%s call free(%p)\n"
-						, get_progname("_")
-						, ptr);
+	DEBUGV("%s call free(%p)\n"
+				, get_progname("_")
+				, ptr);
 	if (ptr == 0)
 		return ;
 	if (!(free.page = find_page(&g_data, ptr, &free.type)))

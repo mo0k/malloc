@@ -39,6 +39,7 @@ SRCS = $(SRCS_PATH)/malloc.c 					\
 		$(SRCS_PATH)/checksum.c 	\
 		$(SRCS_PATH)/create_free_blk.c 			\
 		$(SRCS_PATH)/memory_manager.c 			\
+		$(SRCS_PATH)/manage_free.c 				\
 		$(SRCS_PATH)/memory_utils.c 			\
 		$(SRCS_PATH)/page1.c 					\
 		$(SRCS_PATH)/page2.c 					\

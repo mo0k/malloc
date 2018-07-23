@@ -15,21 +15,17 @@
 
 # include <ft_printf.h>
 # include <fcntl.h>
+# include "malloc.h"
 
-# define DEBUG 0
-# define LEVEL_1 1
-# define LEVEL_2 2
-# define LEVEL_3 3
+# define P ft_dprintf
+# define FLG O_WRONLY | O_APPEND | O_CREAT
+# define X "MALLOC_DEBUG"
 
 int g_fd;
-//ajouter global flag_open
 
-# define OPEN_DEBUG() (g_fd = open("/Users/jmoucade/Desktop/DEBUG", O_WRONLY | O_APPEND | O_CREAT, 0600)) // a modifer
-# define CLOSE_DEBUG() (close(g_fd))
-# define P_DEBUG(lvl, fmt) ((DEBUG) >= lvl  ? ft_dprintf(g_fd, fmt) : 0)
-# define P_DEBUG_VARGS(lvl, fmt, ...) ((DEBUG) >= lvl ? ft_dprintf(g_fd, fmt, __VA_ARGS__): 0)
-# define P_DEBUG_FILE(lvl, fmt) ((DEBUG >= lvl && OPEN_DEBUG() > 0) ? ft_dprintf(g_fd, fmt) && CLOSE_DEBUG() : 0)
-# define P_DEBUG_FILE_VARGS(lvl, fmt, ...) \
-				((DEBUG >= lvl && OPEN_DEBUG() > 0) ? ft_dprintf(g_fd, fmt, __VA_ARGS__) && CLOSE_DEBUG() : 0)
-
+# define PATH() ((is_dbg(X) != 0) ? 1 : 0)
+# define OPN() ((PATH() != 0 ? (g_fd = open(is_dbg(X), FLG, 0600)) : 0))
+# define CLS() (close(g_fd))
+# define DEBUG(fmt) ((OPN() > 0) ? P(g_fd, fmt) && CLS() : 0)
+# define DEBUGV(fmt, ...) ((OPN() > 0) ? P(g_fd, fmt, __VA_ARGS__) && CLS() : 0)
 #endif

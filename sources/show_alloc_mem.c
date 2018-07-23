@@ -28,12 +28,12 @@ static void		display_tiny_small(t_hdr_page *page)
 			if (CHK_HEADER(blk, OFFSET_CHKM(HDR_BLK_SIZE)))
 				kill_prog(CHECKSUM_CORRUPED, 1);
 			if (free && blk == free &&
-				ft_printf("\e[91mF\e[39m %p - %p % 5d octets\talign:%hd\n"
-					, BEGIN_BLK(blk), END_BLK(blk), blk->size, blk->align))
+				ft_printf("\e[91mF\e[39m %p - %p % 5d octets\n"
+					, BEGIN_BLK(blk), END_BLK(blk), blk->size))
 				free = NEXT_FBLK(free);
 			else
-				ft_printf("\e[92mM\e[39m %p - %p % 5d octets\talign:%hd\n"
-					, BEGIN_BLK(blk), END_BLK(blk), blk->size, blk->align);
+				ft_printf("\e[92mM\e[39m %p - %p % 5d octets\n"
+					, BEGIN_BLK(blk), END_BLK(blk), blk->size);
 			blk = NEXT_BLK(blk);
 		}
 		page = NEXT_PAGE(page);
@@ -66,13 +66,13 @@ void			show_alloc_mem(void)
 	}
 	if (g_data.mem_small.page)
 	{
-		ft_printf("SMALL:\n");
+		ft_printf("SMALL:%p\n", g_data.mem_small.page);
 		display_tiny_small(g_data.mem_small.page);
 	}
 	if (g_data.mem_large.page)
 	{
-		ft_printf("LARGE:\n");
+		ft_printf("LARGE:%p\n", g_data.mem_large.page);
 		display_large(g_data.mem_large.page);
 	}
-	P_DEBUG(LEVEL_3, "\n");
+	ft_printf("\n");
 }

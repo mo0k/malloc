@@ -16,17 +16,17 @@ void				display_hdr_page(t_hdr_page *hdr_page)
 {
 	if (!hdr_page)
 		return ;
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page:%p\n", hdr_page);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page->prev:%p\n", hdr_page->prev);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page->next:%p\n", hdr_page->next);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page->size:%d\n", hdr_page->size);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page->last_blk(%p):%d\n"
+	DEBUGV("\t\thdr_page:%p\n", hdr_page);
+	DEBUGV("\t\thdr_page->prev:%p\n", hdr_page->prev);
+	DEBUGV("\t\thdr_page->next:%p\n", hdr_page->next);
+	DEBUGV("\t\thdr_page->size:%d\n", hdr_page->size);
+	DEBUGV("\t\thdr_page->last_blk(%p):%d\n"
 								, hdr_page->last_blk, hdr_page->last_blk);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page->free(%p):%d\n"
+	DEBUGV("\t\thdr_page->free(%p):%d\n"
 								, hdr_page->free, hdr_page->free);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\thdr_page->nbr_blk:%hd\n"
+	DEBUGV("\t\thdr_page->nbr_blk:%hd\n"
 								, hdr_page->nbr_blk);
-	P_DEBUG_FILE_VARGS(LEVEL_3, "\t\tchecksum:0x%02x 0x%02x\n"
+	DEBUGV("\t\tchecksum:0x%02x 0x%02x\n"
 								, hdr_page->chkm[0], hdr_page->chkm[1]);
 }
 

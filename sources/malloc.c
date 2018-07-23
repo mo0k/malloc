@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/malloc.h"
-#include <stdio.h>
 
 char	*ft_getenv(const char *name)
 {
@@ -53,12 +52,25 @@ char	*get_progname(char *env_key)
 	return (value);
 }
 
+char	*is_dbg(char *env_key)
+{
+	static char		*path;
+
+	if (path)
+		return (path);
+	if (!(path = ft_getenv(env_key)))
+	{
+		return (0);
+	}
+	return (path);
+}
+
 void	kill_prog(int flag, int count)
 {
 	//clear data
 	if (flag == CHECKSUM_CORRUPED)
 	{
-		P_DEBUG_FILE_VARGS(LEVEL_1, "CHECKSUM_CORRUPED Numero:%d\n", count);
+		DEBUGV("CHECKSUM_CORRUPED Numero:%d\n", count);
 	}
 	kill(0, SIGABRT);
 }
@@ -97,15 +109,16 @@ void	*malloc(size_t size)
 	t_memory			*mem;
 	enum e_types		type;
 
-	P_DEBUG_FILE_VARGS(LEVEL_1
-						, "%s call malloc(%d)\n"
-						, get_progname("_")
-						, size);
+	DEBUGV("%s call malloc(%d)\n"
+				, get_progname("_")
+				, size);
 	type = type_block(size);
 	mem = memory_by_type(&g_data, type);
 	if (mem->page == NULL)
 		initialize_memory(mem, type, size);
+	pthread_mutex_lock(&g_mutex);
 	(type == LARGE) ? manage_large(mem->page, size)
 					: manage_tiny_small(mem->page, size, mem->type);
+	pthread_mutex_unlock(&g_mutex);
 	return (g_data.mem_ret);
 }

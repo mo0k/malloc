@@ -6,7 +6,7 @@
 /*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 23:49:34 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/23 00:02:16 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/23 04:43:39 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,10 @@ void			*realloc(void *ptr, size_t size)
 	t_hdr_blk		*blk;
 	enum e_types	type;
 
-	P_DEBUG_FILE_VARGS(LEVEL_1
-					, "%s call realloc(%p, %zd)\n"
-					, get_progname("_")
-					, ptr
-					, size);
+	DEBUGV("%s call realloc(%p, %zd)\n"
+				, get_progname("_")
+				, ptr
+				, size);
 	if (ptr && size == 0)
 		return (get_min_objet(ptr));
 	if (!ptr)
@@ -103,6 +102,6 @@ void			*realloc(void *ptr, size_t size)
 													: get_min_objet(ptr));
 	}
 	if (!(blk = find_blk(page, ptr)))
-		return (ptr);
+		return (NULL);
 	return (realloc_end(ptr, size, blk));
 }

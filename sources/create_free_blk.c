@@ -26,7 +26,7 @@ void		create_free_blk(t_hdr_blk *blk, t_hdr_page *page, enum e_types type)
 		del_page(page, type);
 		return ;
 	}
-	place_free_blk(blk, page->free, page); //*OK => a inverser avec condition ci-dessous
+	place_free_blk(blk, page->free, page);
 	SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 	SET_CHKM(blk, OFFSET_CHKM(HDR_BLK_SIZE));
 }

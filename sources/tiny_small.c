@@ -29,7 +29,8 @@ static void		new_page(t_ret_manager *ret, size_t size, enum e_types type)
 	g_data.mem_ret = BEGIN_BLK(blk);
 }
 
-void			manage_tiny_small(t_hdr_page *page, size_t size, enum e_types type)
+void			manage_tiny_small(t_hdr_page *page, size_t size, \
+														enum e_types type)
 {
 	t_ret_manager	ret;
 	t_hdr_blk		*blk;

@@ -16,8 +16,7 @@ void	*calloc(size_t count, size_t size)
 {
 	void	*ptr;
 
-	P_DEBUG_FILE_VARGS(LEVEL_1
-						, "%s call calloc(%zd, %zd)\n"
+	DEBUGV("%s call calloc(%zd, %zd)\n"
 						, get_progname("_")
 						, count
 						, size);
