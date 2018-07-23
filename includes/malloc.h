@@ -27,7 +27,7 @@
 # define CHKM_SIZE 2U
 # define TINY_MAX 1024U
 # define SMALL_MAX 2048U
-# define TINY_PAGE_SIZE getpagesize() * 20
+# define TINY_PAGE_SIZE getpagesize() * 25
 # define SMALL_PAGE_SIZE getpagesize() * 50
 # define MIN_SIZE_OBJ 16
 
