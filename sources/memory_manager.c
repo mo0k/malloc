@@ -3,19 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   memory_manager.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/29 18:10:10 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/07/22 23:25:30 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
+#include "../includes/malloc.h"
 
-//	return NEW_PAGE
-//	return FREE
-//	return CREATE_BLOCK 
 
+//static void		join_blk()
 
 int				manage_free_block(t_hdr_page *page, t_hdr_blk *free, size_t blk_size, size_t min_size)
 {
@@ -59,7 +57,6 @@ int				manage_free_block(t_hdr_page *page, t_hdr_blk *free, size_t blk_size, siz
 			}
 			else
 			{
-
 				if (page->free == free)
 					page->free = prev;
 				prev->fnext = OFFSET(next, prev);
@@ -117,7 +114,7 @@ t_ret_manager	*memory_manager(t_hdr_page *page, size_t blk_size, enum e_types ty
 	else
 		blk = FIRST_BLK(page);
 	blk->size = blk_size;
-	if ((ret->value = check_space_and_align(page, blk, type)) == CREATE_NEW_BLOCK)
+	if ((ret->value = check_space_and_align(page, blk, type)) == CREATE_NEW_BLK)
 		return (ret);
 	else if (ret->value == CREATE_NEW_PAGE)
 	{

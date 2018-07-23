@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:40 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/29 23:15:59 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/07/22 23:25:38 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@
 # define HDR_PAGE_SIZE sizeof(t_hdr_page)
 # define HDR_BLK_SIZE sizeof(t_hdr_blk)
 # define CHKM_SIZE 2U
-# define TINY_MAX 128U
+# define TINY_MAX 1024U
 # define SMALL_MAX 2048U
-# define TINY_PAGE_SIZE getpagesize() * 13
+# define TINY_PAGE_SIZE getpagesize() * 20//13
 # define SMALL_PAGE_SIZE getpagesize() * 50
+#define MIN_SIZE_OBJ 16
 
 extern char **environ;
 
@@ -95,7 +96,7 @@ enum e_ret
 	ERROR_MEMORY_MANAGER = 1,
 	ERROR_ARGS,
 	CREATE_NEW_PAGE,
-	CREATE_NEW_BLOCK,
+	CREATE_NEW_BLK,
 	FREE_USED,
 	FREE_NO_USED,
 	NO_PAGE_FOUND,
@@ -120,6 +121,13 @@ enum e_types
 	SMALL,
 	LARGE
 };
+
+typedef struct	s_free
+{
+	t_hdr_page		*page;
+	t_hdr_blk		*blk;
+	enum e_types 	type;
+}					t_free;
 
 typedef struct		s_memory{
 	t_hdr_page		*page;

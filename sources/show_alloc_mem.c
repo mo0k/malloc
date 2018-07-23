@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   show_alloc_mem.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 21:19:13 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/29 17:56:45 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/07/22 23:17:27 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
+#include "../includes/malloc.h"
 
 static void		display_tiny_small(t_hdr_page *page)
 {
@@ -27,16 +27,14 @@ static void		display_tiny_small(t_hdr_page *page)
 		{
 			if (CHK_HEADER(blk, OFFSET_CHKM(HDR_BLK_SIZE)))
 				kill_prog(CHECKSUM_CORRUPED, 1);
-			if (free && blk == free)
-			{
-				P_DEBUG_VARGS(LEVEL_3, "\e[91mF\e[39m %p - %p % 5d octets\talign:%hd\n", BEGIN_BLK(blk), END_BLK(blk), blk->size, blk->align);
-				display_hdr_blk(free);			
+			if (free && blk == free &&
+				ft_printf("\e[91mF\e[39m %p - %p % 5d octets\talign:%hd\n"
+					, BEGIN_BLK(blk), END_BLK(blk), blk->size, blk->align))
 				free = NEXT_FBLK(free);
-			}
 			else
-				P_DEBUG_VARGS(LEVEL_3, "\e[92mM\e[39m %p - %p % 5d octets\talign:%hd\n", BEGIN_BLK(blk), END_BLK(blk), blk->size, blk->align);
+				ft_printf("\e[92mM\e[39m %p - %p % 5d octets\talign:%hd\n"
+					, BEGIN_BLK(blk), END_BLK(blk), blk->size, blk->align);
 			blk = NEXT_BLK(blk);
-			//ft_printf("next blk:%p\n", blk);
 		}
 		page = NEXT_PAGE(page);
 	}
@@ -53,7 +51,8 @@ static void		display_large(t_hdr_page *page)
 		blk = FIRST_BLK(page);
 		if (CHK_HEADER(blk, OFFSET_CHKM(HDR_BLK_SIZE)))
 			kill_prog(CHECKSUM_CORRUPED, 22);
-		P_DEBUG_VARGS(LEVEL_3,"\e[92mM\e[39m %p - %p % 5d octets\n", BEGIN_BLK(blk), END_BLK(blk), blk->size);
+		ft_printf("\e[92mM\e[39m %p - %p % 5d octets\n"
+							, BEGIN_BLK(blk), END_BLK(blk), blk->size);
 		page = NEXT_PAGE(page);
 	}
 }
@@ -62,18 +61,18 @@ void			show_alloc_mem(void)
 {
 	if (g_data.mem_tiny.page)
 	{
-		P_DEBUG_VARGS(LEVEL_3, "TINY:%p\n", g_data.mem_tiny.page);
-		display_tiny_small(g_data.mem_tiny.page);	
+		ft_printf("TINY:%p\n", g_data.mem_tiny.page);
+		display_tiny_small(g_data.mem_tiny.page);
 	}
 	if (g_data.mem_small.page)
 	{
-		P_DEBUG(LEVEL_3, "SMALL:\n");
+		ft_printf("SMALL:\n");
 		display_tiny_small(g_data.mem_small.page);
 	}
 	if (g_data.mem_large.page)
 	{
-		P_DEBUG(LEVEL_3, "LARGE:\n");
-		display_large(g_data.mem_large.page);	
+		ft_printf("LARGE:\n");
+		display_large(g_data.mem_large.page);
 	}
 	P_DEBUG(LEVEL_3, "\n");
 }

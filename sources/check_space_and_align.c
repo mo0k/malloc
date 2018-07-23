@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   check_space_and_align.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/29 11:41:31 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/07/22 23:25:02 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
+#include "../includes/malloc.h"
 
-int 		check_align(t_hdr_blk *new_blk, void *limit_end, size_t min_size)
+int	check_align(t_hdr_blk *new_blk, void *limit_end, size_t min_size)
 {
 	t_hdr_blk		*addr;
 
@@ -20,14 +20,15 @@ int 		check_align(t_hdr_blk *new_blk, void *limit_end, size_t min_size)
 		return (ERROR_ARGS);
 	addr = (void*)new_blk + HDR_BLK_SIZE;
 	new_blk->align = 0;
-	while ((void*)addr + min_size + new_blk->align < limit_end && ALIGN(new_blk))
+	while ((void*)addr + min_size + new_blk->align < limit_end
+			&& ALIGN(new_blk))
 		++new_blk->align;
 	if ((void*)addr + min_size + new_blk->align < limit_end)
 		return (ALIGN);
 	return (NO_ALIGN);
 }
 
-int 	check_space_and_align(t_hdr_page *page, t_hdr_blk *blk, enum e_types type)
+int	check_space_and_align(t_hdr_page *page, t_hdr_blk *blk, enum e_types type)
 {
 	if (page == 0 || blk == 0)
 		return (-1);
@@ -39,7 +40,7 @@ int 	check_space_and_align(t_hdr_page *page, t_hdr_blk *blk, enum e_types type)
 		{
 			blk->size += END_PAGE(page) - END_BLK(blk);
 		}
-		return (CREATE_NEW_BLOCK);
+		return (CREATE_NEW_BLK);
 	}
 	return (CREATE_NEW_PAGE);
 }

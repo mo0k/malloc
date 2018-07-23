@@ -3,27 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/29 23:01:01 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/07/22 23:10:51 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
+#include "../includes/malloc.h"
 #include <stdio.h>
 
-char 	*ft_getenv(const char *name)
+char	*ft_getenv(const char *name)
 {
-	int count;
+	int		count;
+	char	*sep;
 
 	count = 0;
 	if (!name)
 		return (0);
 	while (environ && environ[count])
 	{
-		char *sep;
-
 		if (!(sep = ft_strchr(environ[count], '=')))
 			return (0);
 		else
@@ -39,11 +38,13 @@ char 	*ft_getenv(const char *name)
 	return (0);
 }
 
-char 	*get_progname(char *env_key)
+char	*get_progname(char *env_key)
 {
-	static char ret[48];
-	char *value;
+	static char		ret[48];
+	static char		*value;
 
+	if (value)
+		return (value);
 	if (!(value = ft_getenv(env_key)))
 	{
 		strcpy(ret, "Unknow");
@@ -69,10 +70,10 @@ void	manage_large(t_hdr_page *page, size_t size)
 	if (!page)
 		return ;
 	if (CHK_HEADER(page, OFFSET_CHKM(HDR_PAGE_SIZE)))
-			kill_prog(CHECKSUM_CORRUPED, 18);
+		kill_prog(CHECKSUM_CORRUPED, 18);
 	blk = FIRST_BLK(page);
 	if (CHK_HEADER(blk, OFFSET_CHKM(HDR_BLK_SIZE)))
-			kill_prog(CHECKSUM_CORRUPED, 19);
+		kill_prog(CHECKSUM_CORRUPED, 19);
 	if (blk->size == 0)
 	{
 		blk->size = size;
@@ -84,19 +85,22 @@ void	manage_large(t_hdr_page *page, size_t size)
 	{
 		if (!page->next)
 		{
-			initialize_page((t_hdr_page**)&page->next,page, LARGE_SIZE(size));
+			initialize_page((t_hdr_page**)&page->next, page, LARGE_SIZE(size));
 			SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
 		}
-		return(manage_large(page->next, size));
+		return (manage_large(page->next, size));
 	}
 }
 
-void 	*malloc(size_t size)
+void	*malloc(size_t size)
 {
 	t_memory			*mem;
 	enum e_types		type;
 
-	P_DEBUG_FILE_VARGS(LEVEL_1, "%s call malloc(%d)\n", get_progname("_"), size);
+	P_DEBUG_FILE_VARGS(LEVEL_1
+						, "%s call malloc(%d)\n"
+						, get_progname("_")
+						, size);
 	type = type_block(size);
 	mem = memory_by_type(&g_data, type);
 	if (mem->page == NULL)

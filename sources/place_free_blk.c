@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   place_free_blk.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/03 22:38:57 by mo0k              #+#    #+#             */
-/*   Updated: 2018/04/29 11:55:24 by mo0k             ###   ########.fr       */
+/*   Updated: 2018/07/22 23:11:07 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "malloc.h"
+#include "../includes/malloc.h"
 
 static int		last_place(t_hdr_blk *new_last, t_hdr_blk *old_last)
 {
@@ -49,7 +49,8 @@ static int		first_place(t_hdr_blk *new_first, t_hdr_blk *old_first)
 	return (BLOCK_FREE_PLACED);
 }
 
-int 			place_free_blk(t_hdr_blk *blk, t_hdr_blk *free, t_hdr_page *page)
+int				place_free_blk(t_hdr_blk *blk, t_hdr_blk *free \
+												, t_hdr_page *page)
 {
 	t_hdr_blk	*next;
 

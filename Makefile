@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mo0k <mo0k@student.42.fr>                  +#+  +:+       +#+         #
+#    By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 09:22:47 by mo0k              #+#    #+#              #
-#    Updated: 2018/04/29 23:17:49 by mo0k             ###   ########.fr        #
+#    Updated: 2018/07/22 22:56:33 by jmoucade         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ SRCS = $(SRCS_PATH)/malloc.c 					\
 		$(SRCS_PATH)/create_free_blk.c 			\
 		$(SRCS_PATH)/memory_manager.c 			\
 		$(SRCS_PATH)/memory_utils.c 			\
-		$(SRCS_PATH)/page.c 					\
+		$(SRCS_PATH)/page1.c 					\
+		$(SRCS_PATH)/page2.c 					\
 		$(SRCS_PATH)/place_free_blk.c 			\
 		$(SRCS_PATH)/tiny_small.c
 
