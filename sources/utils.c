@@ -1,38 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   checksum.c                                         :+:      :+:    :+:   */
+/*   malloc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmoucade <jmoucade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/10 15:12:43 by mo0k              #+#    #+#             */
-/*   Updated: 2018/07/22 23:10:41 by jmoucade         ###   ########.fr       */
+/*   Updated: 2018/07/22 23:10:51 by jmoucade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/malloc.h"
 
-void		*chkm(void *header, size_t size)
+static void	clear_all_pages(t_hdr_page *root)
 {
-	static unsigned char	chkm[2];
-	size_t					i;
-	int						j;
-	unsigned int			sum1;
-	unsigned int			sum2;
+	t_hdr_page *next;
 
-	if (!header)
-		return (NULL);
-	i = 0;
-	j = 0;
-	sum1 = 0;
-	sum2 = 0;
-	while (i < size)
+	while (root)
 	{
-		sum1 += *(unsigned char*)(header + i);
-		sum2 += *(unsigned char*)(header + i) * ++j;
-		++i;
+		next = root;
+		DEL_PAGE(root);
+		root = next;
 	}
-	chkm[0] = sum1 & 0xFF;
-	chkm[1] = sum2 & 0xFF;
-	return ((void*)chkm);
+}
+
+static void	clear_data(void)
+{
+	if (g_data.mem_tiny.page)
+		clear_all_pages(g_data.mem_tiny.page);
+	if (g_data.mem_small.page)
+		clear_all_pages(g_data.mem_tiny.page);
+	if (g_data.mem_large.page)
+		clear_all_pages(g_data.mem_tiny.page);
+}
+
+void		kill_prog(int flag, int count)
+{
+	clear_data();
+	if (flag == CHECKSUM_CORRUPED)
+	{
+		DEBUGV("CHECKSUM_CORRUPED Numero:%d\n", count);
+	}
+	kill(0, SIGABRT);
 }

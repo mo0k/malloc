@@ -12,21 +12,55 @@
 
 #include "../includes/malloc.h"
 
-void	*malloc(size_t size)
+char	*ft_getenv(const char *name)
 {
-	t_memory			*mem;
-	enum e_types		type;
+	int				count;
+	char			*sep;
 
-	DEBUGV("%s call malloc(%d)\n"
-				, get_progname("_")
-				, size);
-	type = type_block(size);
-	mem = memory_by_type(&g_data, type);
-	if (mem->page == NULL)
-		initialize_memory(mem, type, size);
-	pthread_mutex_lock(&g_mutex);
-	(type == LARGE) ? manage_large(mem->page, size)
-					: manage_tiny_small(mem->page, size, mem->type);
-	pthread_mutex_unlock(&g_mutex);
-	return (g_data.mem_ret);
+	count = 0;
+	if (!name)
+		return (0);
+	while (environ && environ[count])
+	{
+		if (!(sep = ft_strchr(environ[count], '=')))
+			return (0);
+		else
+			*sep = 0;
+		if (!ft_strcmp(name, environ[count]))
+		{
+			*sep = '=';
+			return (sep + 1);
+		}
+		*sep = '=';
+		++count;
+	}
+	return (0);
+}
+
+char	*get_progname(char *env_key)
+{
+	static char		ret[48];
+	static char		*value;
+
+	if (value)
+		return (value);
+	if (!(value = ft_getenv(env_key)))
+	{
+		strcpy(ret, "Unknow");
+		return (ret);
+	}
+	return (value);
+}
+
+char	*is_dbg(char *env_key)
+{
+	static char		*path;
+
+	if (path)
+		return (path);
+	if (!(path = ft_getenv(env_key)))
+	{
+		return (0);
+	}
+	return (path);
 }

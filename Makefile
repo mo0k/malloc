@@ -36,15 +36,18 @@ SRCS = $(SRCS_PATH)/malloc.c 					\
 		$(SRCS_PATH)/show_alloc_mem.c 			\
 		$(SRCS_PATH)/block.c 					\
 		$(SRCS_PATH)/check_space_and_align.c 	\
-		$(SRCS_PATH)/checksum.c 	\
+		$(SRCS_PATH)/checksum.c 				\
 		$(SRCS_PATH)/create_free_blk.c 			\
 		$(SRCS_PATH)/memory_manager.c 			\
 		$(SRCS_PATH)/manage_free.c 				\
+		$(SRCS_PATH)/manage_large.c 			\
 		$(SRCS_PATH)/memory_utils.c 			\
+		$(SRCS_PATH)/utils.c 					\
 		$(SRCS_PATH)/page1.c 					\
 		$(SRCS_PATH)/page2.c 					\
 		$(SRCS_PATH)/place_free_blk.c 			\
-		$(SRCS_PATH)/tiny_small.c
+		$(SRCS_PATH)/tiny_small.c				\
+		$(SRCS_PATH)/debug.c
 
 OBJS	= $(SRCS:%.c=%.o)
 C_LGREEN = "\033[92m"

@@ -36,7 +36,7 @@ int	check_space_and_align(t_hdr_page *page, t_hdr_blk *blk, enum e_types type)
 		blk->align += 1;
 	if (AVAILABLE_BLK(blk, page))
 	{
-		if (MIN_SIZE_REMAINING(blk, page, type))
+		if (IS_MIN_SIZE(blk, page, type))
 		{
 			blk->size += END_PAGE(page) - END_BLK(blk);
 		}

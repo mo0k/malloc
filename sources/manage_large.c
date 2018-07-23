@@ -12,21 +12,31 @@
 
 #include "../includes/malloc.h"
 
-void	*malloc(size_t size)
+void	manage_large(t_hdr_page *page, size_t size)
 {
-	t_memory			*mem;
-	enum e_types		type;
+	t_hdr_blk	*blk;
 
-	DEBUGV("%s call malloc(%d)\n"
-				, get_progname("_")
-				, size);
-	type = type_block(size);
-	mem = memory_by_type(&g_data, type);
-	if (mem->page == NULL)
-		initialize_memory(mem, type, size);
-	pthread_mutex_lock(&g_mutex);
-	(type == LARGE) ? manage_large(mem->page, size)
-					: manage_tiny_small(mem->page, size, mem->type);
-	pthread_mutex_unlock(&g_mutex);
-	return (g_data.mem_ret);
+	if (!page)
+		return ;
+	if (CHK_HEADER(page, OFFSET_CHKM(HDR_PAGE_SIZE)))
+		kill_prog(CHECKSUM_CORRUPED, 18);
+	blk = FIRST_BLK(page);
+	if (CHK_HEADER(blk, OFFSET_CHKM(HDR_BLK_SIZE)))
+		kill_prog(CHECKSUM_CORRUPED, 19);
+	if (blk->size == 0)
+	{
+		blk->size = size;
+		create_new_block(blk, page);
+		SET_CHKM(blk, OFFSET_CHKM(HDR_BLK_SIZE));
+		g_data.mem_ret = BEGIN_BLK(blk);
+	}
+	else
+	{
+		if (!page->next)
+		{
+			initialize_page((t_hdr_page**)&page->next, page, LARGE_SIZE(size));
+			SET_CHKM(page, OFFSET_CHKM(HDR_PAGE_SIZE));
+		}
+		return (manage_large(page->next, size));
+	}
 }
