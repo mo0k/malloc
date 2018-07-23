@@ -20,6 +20,7 @@ void	*calloc(size_t count, size_t size)
 						, get_progname("_")
 						, count
 						, size);
+	pthread_mutex_lock(&g_mutex);
 	if (count == 0 || size == 0)
 	{
 		count = 1;
@@ -28,5 +29,6 @@ void	*calloc(size_t count, size_t size)
 	if (!(ptr = malloc(count * size)))
 		return (NULL);
 	ft_memset(ptr, 0, count * size);
+	pthread_mutex_unlock(&g_mutex);
 	return (ptr);
 }

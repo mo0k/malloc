@@ -16,6 +16,7 @@ char	*ft_getenv(const char *name)
 {
 	int				count;
 	char			*sep;
+	extern char		**environ;
 
 	count = 0;
 	if (!name)

@@ -31,8 +31,6 @@
 # define SMALL_PAGE_SIZE getpagesize() * 50
 # define MIN_SIZE_OBJ 16
 
-extern char			**environ;
-
 typedef struct		s_header_block
 {
 	unsigned int	bprev;

@@ -16,19 +16,26 @@ void	free(void *ptr)
 {
 	t_free		free;
 
-	DEBUGV("%s call free(%p)\n"
-				, get_progname("_")
-				, ptr);
+	DEBUGV("%s call free(%p)\n", get_progname("_"), ptr);
+	pthread_mutex_lock(&g_mutex);
 	if (ptr == 0)
 		return ;
 	if (!(free.page = find_page(&g_data, ptr, &free.type)))
+	{
+		pthread_mutex_unlock(&g_mutex);
 		return ;
+	}
 	if (free.type == LARGE)
 	{
 		del_page(free.page, LARGE);
+		pthread_mutex_unlock(&g_mutex);
 		return ;
 	}
 	if (!(free.blk = find_blk(free.page, ptr)))
+	{
+		pthread_mutex_unlock(&g_mutex);
 		return ;
+	}
 	create_free_blk(free.blk, free.page, free.type);
+	pthread_mutex_unlock(&g_mutex);
 }
